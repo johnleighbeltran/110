@@ -42,7 +42,7 @@ const saveToSupabase = async (hotel) => {
     } else {
       console.log('Recommendation saved:', recommendationData);
     }
-  } catch (err) {
+  } catch (err) { 
     console.error('Error:', err);
   }
 };
