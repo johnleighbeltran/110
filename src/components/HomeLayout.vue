@@ -38,10 +38,6 @@
 <!-- Bottom Navbar -->
 <div class="fixed-bottom bg-dark border-top">
   <div class="container d-flex justify-content-around py-2 px-3">
-    <RouterLink to="/recommend" class="text-center text-decoration-none text-light">
-      <i class="bi bi-suit-heart-fill"></i>
-      <div>recommend</div>
-    </RouterLink>
 
     <RouterLink to="/home" class="text-center text-decoration-none text-light">
       <i class="bi bi-house-check-fill"></i>
