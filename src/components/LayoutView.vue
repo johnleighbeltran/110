@@ -1,190 +1,186 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRouter, useRoute } from 'vue-router'; // Import Vue Router
-import { supabase } from '../supabase'; // Import Supabase client
-import logo from '@/assets/images/logo.png'; // Import image for the login page
+import { useRoute } from 'vue-router' // Import useRoute to access current route
+import { ref, computed, onMounted } from 'vue'
+import { useDisplay } from 'vuetify' // Use the correct composable for breakpoints
+import { supabase } from '@/supabase' // Import Supabase client
+import logo from '@/assets/images/logo.png' // Import logo image
 
-// Define the router and route
-const router = useRouter();
-const route = useRoute(); // Get the current route
+const drawer = ref(false) // Toggle for navigation drawer (mobile drawer state)
 
-// Define ref for user session
-const user = ref(null);
+// Get the current route from Vue Router
+const route = useRoute()
 
-// Check user session on mounted
+// Computed property to check if the screen is small
+const display = useDisplay()
+const isSmallScreen = computed(() => display.smAndDown)
+
+// User state
+const user = ref(null)
+const isEmailConfirmed = ref(false)
+
+// Fetch user information from Supabase when the component is mounted
 onMounted(async () => {
-  const { data: session } = await supabase.auth.getSession();  // Correct way to get session
-  user.value = session?.user;  // Assign the user data to the ref
-});
+  const { data: { user: currentUser } } = await supabase.auth.getUser()
+  if (currentUser) {
+    user.value = currentUser
+    // Check if email is confirmed
+    isEmailConfirmed.value = currentUser.email_confirmed_at !== null
+  }
+})
 </script>
 
 <template>
-  <div>
-    <!-- Conditionally render the layout (Navbar, Slot, Footer) for specific routes -->
-    <div v-if="route.name === 'landing' || route.name === 'login' || route.name === 'register'" class="background-color">
-      <!-- Navbar -->
-      <nav class="navbar bg-body-tertiary fixed-top shadow-sm">
-        <div class="container-fluid">
-          <h1 class="navbar-brand" href="#">Explora Butuan</h1>
-          <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
-            <div class="offcanvas-header">
-              <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-            </div>
-            <div class="offcanvas-body">
-              <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                <li class="nav-item">
-                  <RouterLink class="nav-link active" aria-current="page" to="/">Home</RouterLink>
-                </li>
-                <li class="nav-item">
-                  <RouterLink class="nav-link" to="/login">Login</RouterLink>
-                </li>
-                <li class="nav-item">
-                  <RouterLink class="nav-link" to="/register">Register</RouterLink>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </nav>
+  <v-app>
+    <!-- Conditionally render the layout components for specific routes -->
+    <template v-if="route.name !== 'landing' && route.name !=='admindashboard' && route.name !== 'login' && route.name !== 'register' && isEmailConfirmed">
+      <!-- Navigation Drawer -->
+      <v-navigation-drawer app v-model="drawer" permanent width="250" clipped>
+        <v-list dense>
+          <!-- Logo Item -->
+          <v-list-item @click="changeContent('dashboard')">
+            <v-list-item-content class="text-center">
+              <img :src="logo" alt="Logo" class="logo" />
+            </v-list-item-content>
+          </v-list-item>
+
+          <!-- Other Menu Items -->
+          <v-list-item to="/dashboard" router-link>
+            <v-list-item-content>
+              <v-list-item-title>Dashboard</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item to="/foundlost" router-link>
+            <v-list-item-content>
+              <v-list-item-title>Report Found or Lost Item</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item to="/browse" router-link>
+            <v-list-item-content>
+              <v-list-item-title>Browse Found Item</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item to="/claims" router-link>
+            <v-list-item-content>
+              <v-list-item-title>My Claims</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+           <v-list-item to="/claimsReport" router-link>
+            <v-list-item-content>
+              <v-list-item-title>My Claims & Reports</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-navigation-drawer>
+
+      <!-- App Bar -->
+      <v-app-bar app color="primary" dark>
+        <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+        <v-toolbar-title>LostFound</v-toolbar-title>
+      </v-app-bar>
 
       <!-- Main Content -->
-      <div class="container py-5">
-        <div class="col-sm-12 text-center">
-          <img id="logo" :src="logo" width="50%" height="5%" alt="Logo" />
-          <h1 class="fst-italic">Explora Butuan</h1>
-        </div>
-        <!-- Content Slot -->
-        <slot></slot>
-      </div>
+      <v-main>
+        <v-container fluid class="pa-4">
+          <v-row justify="center">
+            <v-col cols="12" sm="10" md="20" lg="9">
+              <v-card class="elevation-2" outlined>
+                <v-card-title class="text-center">
+                  <!-- Dynamic title based on current content -->
+                  <span v-if="route.name === 'dashboard'"></span>
+                  <span v-if="route.name === 'foundlost'"></span>
+                  <span v-if="route.name === 'browse'"></span>
+                  <span v-if="route.name === 'claimsReport'"></span>
+                  <span v-if="route.name === 'claims'"></span>
+                </v-card-title>
 
-      <!-- Bottom Navbar -->
-      <div class="fixed-bottom bg-dark border-top">
-        <div class="container d-flex justify-content-around py-2 px-3">
-          <RouterLink to="/login" class="text-center text-decoration-none text-light">
-            <i class="bi bi-box-arrow-in-right"></i>
-            <div>Login</div>
-          </RouterLink>
+                <v-card-text>
+                  <!-- Dynamic content based on current route -->
+                  <router-view></router-view>
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-main>
 
-          <RouterLink to="/register" class="text-center text-decoration-none text-light">
-            <i class="bi bi-person-plus"></i>
-            <div>Register</div>
-          </RouterLink>
-        </div>
-      </div>
-    </div>
+      <!-- Bottom Navigation Bar (visible on small screens) -->
+      <v-bottom-navigation v-if="isSmallScreen" app color="primary" dark>
+        <v-btn to="/dashboard" router-link text>
+          <span class="mdi mdi-view-dashboard"></span>
+        </v-btn>
+        <v-btn to="/foundlost" router-link text>
+          <span class="mdi mdi-check-circle-outline"></span>
+           <span class="mdi mdi-alert-circle-outline"></span>
+        </v-btn>
+        <v-btn to="/browse" router-link text>
+          <span class="mdi mdi-note-search"></span>
+        </v-btn>
+        <v-btn to="/claims" router-link text>
+          <span class="mdi-file-document-outline"></span>
+        </v-btn>
+          <v-btn to="/claimsReport" router-link text>
+          <span class="mdi-file-document-outline"></span>
+        </v-btn>
+        
+  
+      </v-bottom-navigation>
+    </template>
 
-    <!-- For the Home route (and other routes), render only the content -->
-    <div v-else>
-      <slot></slot> <!-- The slot will be replaced with the content of the route -->
-    </div>
-  </div>
+    <!-- For routes other than landing, login, or register, render only the content -->
+    <v-main v-else>
+      <slot></slot> <!-- Render slot for the content of the current route -->
+    </v-main>
+  </v-app>
 </template>
 
+
 <style scoped>
-/* Navbar Styles */
-.background-color {
-  background: repeating-linear-gradient(45deg, #BBD8A3, #BBD8A3 33%, #fb653c 33%, #f6c96e 66%, #f6c96e 66%);
+/* Styling for the app bar and navigation drawer */
+.v-app-bar {
+  border-bottom: 1px solid #e0e0e0;
 }
 
-.navbar-brand {
-  font-weight: bold;
-  font-size: 1.5rem;
+/* Add custom styling for the content area */
+.v-main {
+  background-color: #f5f5f5;
 }
 
-.nav-link {
-  color: #000000;
-}
-
-.offcanvas-body {
-  background-color: #FFF6E0;
-}
-
-/* Home View Styles */
-.container {
-  max-width: 1200px;
-}
-
-h1 {
-  font-size: 3rem;
-  font-weight: bold;
-  color: #333;
-}
-
-p.lead {
-  font-size: 1.25rem;
-  color: #555;
-}
-
-img {
-  border-radius: 10px;
-  cursor: pointer; /* Make the logo clickable for the hover effect */
-}
-
-/* Bottom Navbar Styles */
-.fixed-bottom {
-  background-color: #343a40;
-}
-
-.fixed-bottom .text-light {
-  color: #f8f9fa !important;
-}
-
-.fixed-bottom .text-light:hover {
-  color: #007bff !important;
-}
-
-.text-center {
-  font-size: 0.9rem;
-}
-
-@keyframes popUp {
-  0% {
-    transform: scale(0.5); /* Start smaller */
-    opacity: 0; /* Start invisible */
-  }
-  50% {
-    transform: scale(1.2); /* Grow slightly larger */
-    opacity: 0.7; /* Make slightly visible */
-  }
-  100% {
-    transform: scale(1); /* Return to normal size */
-    opacity: 1; /* Fully visible */
-  }
-}
-
-/* Apply the pop-up animation to the navbar-brand */
-.fst-italic {
-  animation: popUp 1s ease-out; /* Apply animation with 1-second duration */
-}
-
-/* Reduce the width of the offcanvas menu */
-.offcanvas-end {
-  width: 200px; /* Change to any value you prefer */
-}
-
-/* Adjust the opacity of the backdrop */
-.offcanvas-backdrop {
-  opacity: 0.5; /* Reduce the overlay intensity */
-}
-
-/* Optionally, add more spacing or padding adjustments */
-.offcanvas-body {
+.v-container {
+  background-color: white;
   padding: 20px;
+  border-radius: 8px;
 }
 
-.nav-item {
-  border: 2px solid #FFEDD8; /* Border color */
-  background-color: #FFA559;
-  padding: 10px 20px; /* Add padding to create space inside the item */
-  border-radius: 30px; /* Rounded corners for a modern look */
-  margin-bottom: 10px; /* Spacing between nav items */
-  display: flex;
-  align-items: center; /* Center the content */
-  justify-content: center; /* Space out any elements inside */
-  transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition on hover */
+.v-card {
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+}
+
+/* Resize logo and center it */
+.logo {
+  width: 50%; /* Resize logo to 50% of the available width */
+  height: auto; /* Maintain aspect ratio */
+  margin: 20px auto; /* Center logo with margin */
+}
+
+/* Adjusting navigation drawer behavior on small screens */
+@media (max-width: 600px) {
+
+  .v-app-bar-nav-icon {
+    display: block;
+  }
+
+  /* Logo Size for Mobile */
+  .logo {
+    width: 40%; /* Further reduce logo size on mobile */
+  }
+
+  .v-main {
+    margin-left: 0; /* No space when the drawer is hidden */
+  }
 }
 </style>

@@ -1,5 +1,5 @@
 <script setup>
-    import Layout from '@/components/LayoutView.vue'; // Import the Layout component
+import Layout from '@/components/LayoutView.vue' // Import the Layout component
 </script>
 
 <template>
@@ -8,6 +8,4 @@
   </Layout>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
