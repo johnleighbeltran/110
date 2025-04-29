@@ -1,14 +1,10 @@
 <script setup>
-import { useRoute } from 'vue-router' // Import useRoute to access current route
+import { useRoute, useRouter } from 'vue-router' 
 import { ref, computed, onMounted } from 'vue'
 import { useDisplay } from 'vuetify' // Use the correct composable for breakpoints
 import { supabase } from '@/supabase' // Import Supabase client
 import logo from '@/assets/images/logo.png' // Import logo image
 
-const drawer = ref(false) // Toggle for navigation drawer (mobile drawer state)
-
-// Get the current route from Vue Router
-const route = useRoute()
 
 // Computed property to check if the screen is small
 const display = useDisplay()
@@ -17,6 +13,29 @@ const isSmallScreen = computed(() => display.smAndDown)
 // User state
 const user = ref(null)
 const isEmailConfirmed = ref(false)
+// Get the current route from Vue Router
+const route = useRoute()
+const router = useRouter()
+const showProfileDialog = ref(false) // New ref to control profile modal
+const drawer = ref(false) // Toggle for navigation drawer (mobile drawer state)
+const profileImageUrl = ref('') // Profile Image URL
+const uploading = ref(false)
+const uploadError = ref(null)
+const showLogoutConfirm = ref(false)
+
+function openProfileModal() {
+  showProfileDialog.value = true
+}
+
+function confirmLogout() {
+  showLogoutConfirm.value = true
+}
+
+async function logout() {
+  await supabase.auth.signOut()
+  router.push('/login') // Redirect to login page after logout
+}
+
 
 // Fetch user information from Supabase when the component is mounted
 onMounted(async () => {
@@ -27,6 +46,59 @@ onMounted(async () => {
     isEmailConfirmed.value = currentUser.email_confirmed_at !== null
   }
 })
+
+// Upload image using user's preferred setup
+const uploadImage = async (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  uploading.value = true;
+  uploadError.value = null;
+
+  try {
+    const fileName = `${Date.now()}-${file.name}`;
+    
+    // Upload the image
+    const { data, error: uploadErrorResult } = await supabase.storage
+      .from('avatars')
+      .upload(fileName, file);
+
+    if (uploadErrorResult) {
+      uploadError.value = 'Error uploading image.';
+      console.error('Upload error:', uploadErrorResult);
+      return;
+    }
+
+    // Build public URL manually
+    const filePath = data.path;
+    const baseURL = 'https://bzijoejabwuaazggftcm.supabase.co';
+    const publicURL = `${baseURL}/storage/v1/object/public/avatars/${filePath}`;
+
+    profileImageUrl.value = publicURL;
+
+    // Update user's profile metadata in Supabase
+    await supabase.auth.updateUser({
+      data: {
+        avatar_url: publicURL,
+      },
+    });
+
+    // Update local user metadata too to reflect new image immediately
+    if (user.value) {
+      user.value.user_metadata = {
+        ...user.value.user_metadata,
+        avatar_url: publicURL,
+      }
+    }
+
+  } catch (err) {
+    console.error('Unexpected upload error:', err);
+    uploadError.value = 'Unexpected error occurred.';
+  } finally {
+    uploading.value = false;
+  }
+}
+
 </script>
 
 <template>
@@ -74,6 +146,70 @@ onMounted(async () => {
       <v-app-bar app color="primary" dark>
         <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
         <v-toolbar-title>LostFound</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-btn icon @click="openProfileModal">
+          <v-icon><v-img :src="user?.user_metadata?.avatar_url || profileImageUrl || 'https://via.placeholder.com/150'" alt="Profile Picture" /></v-icon>
+        </v-btn>
+
+        <v-dialog v-model="showProfileDialog" max-width="500">
+  <v-card>
+    <v-card-title class="headline text-center">Profile</v-card-title>
+
+    <v-card-text class="text-center">
+      <div v-if="user">
+        <!-- Profile Image -->
+        <v-avatar size="100" class="mx-auto mb-3">
+          <v-img :src="user?.user_metadata?.avatar_url || profileImageUrl || 'https://via.placeholder.com/150'" alt="Profile Picture" />
+        </v-avatar>
+
+        <!-- Upload Button -->
+        <div class="my-3">
+          <v-btn small color="primary" @click="$refs.fileInput.click()" :loading="uploading">
+            Upload New Photo
+          </v-btn>
+          <input ref="fileInput" type="file" accept="image/*" class="d-none" @change="uploadImage" />
+        </div>
+
+        <!-- Upload Error Message -->
+        <div v-if="uploadError" class="error-message red--text text-caption">
+          {{ uploadError }}
+        </div>
+
+        <p class="mt-4"><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>User ID:</strong> {{ user.id }}</p>
+      </div>
+      <div v-else>
+        <p>Loading profile...</p>
+      </div>
+    </v-card-text>
+
+    <!-- Bottom Logout Icon -->
+
+    <v-card-actions>
+  <v-spacer></v-spacer>
+  <v-btn icon color="error" @click="confirmLogout">
+    <v-icon>mdi-logout</v-icon>
+  </v-btn>
+</v-card-actions>
+
+
+    <v-dialog v-model="showLogoutConfirm" max-width="400">
+  <v-card>
+    <v-card-title class="headline">Confirm Logout</v-card-title>
+    <v-card-text>Are you sure you want to logout?</v-card-text>
+
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-btn text @click="showLogoutConfirm = false">Cancel</v-btn>
+      <v-btn color="error" text @click="logout">Logout</v-btn>
+    </v-card-actions>
+  </v-card>
+</v-dialog>
+
+  </v-card>
+</v-dialog>
+
+
       </v-app-bar>
 
       <!-- Main Content -->
