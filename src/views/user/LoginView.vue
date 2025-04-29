@@ -28,27 +28,44 @@ const login = async (e) => {
   }
 
   loading.value = true
-  
+
   try {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: email.value,
-      password: password.value,
-    })
-
-    if (error) {
-      console.error('Error during login:', error.message)
-      alert('Error: ' + error.message)
-    } else {
-      console.log('Login successful:', data)
-
-      if (selectedRole.value === 'admin') {
+    // Check if admin is selected
+    if (selectedRole.value === 'admin') {
+      if (email.value === 'admin@gmail.com' && password.value === '1234') {
+        localStorage.setItem('isAdmin', 'true') // Save admin flag
+        alert('Welcome Admin!')
         router.push('/admindashboard')
+        return // 🚨 Important: STOP here if admin login succeeds
       } else {
+        alert('Invalid admin credentials.')
+        return // 🚨 STOP here if admin login fails
+      }
+    }
+
+    // Check if user is selected
+    if (selectedRole.value === 'user') {
+      localStorage.setItem('isAdmin', 'false') // Save user flag
+
+      // ✅ Normal user login via Supabase
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.value,
+        password: password.value,
+      })
+
+      if (error) {
+        console.error('Error during login:', error.message)
+        alert('Error: ' + error.message)
+      } else {
+        console.log('Login successful:', data)
+        alert('Login successful!')
         router.push('/dashboard')
       }
-
-      alert('Login successful!')
+      return // 🚨 Always add return after user login
     }
+
+    // If none of the roles matched
+    alert('Invalid role selected. Please try again.')
   } catch (error) {
     console.error('Error:', error)
     alert('An error occurred. Please try again.')
@@ -56,6 +73,8 @@ const login = async (e) => {
     loading.value = false
   }
 }
+
+
 
 // Forgot Password Function
 const sendPasswordReset = async () => {
