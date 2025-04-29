@@ -11,6 +11,16 @@ const password = ref('')
 const confirmPassword = ref('')
 const errorMessage = ref('')
 const successMessage = ref('')
+const showPassword = ref(false)
+const showConfirmPassword = ref(false)
+
+// Toggle individual password field visibility
+const toggleVisibility = (field) => {
+  if (field === 'password' || field === 'confirm') {
+    showPassword.value = !showPassword.value
+    showConfirmPassword.value = !showConfirmPassword.value
+  }
+}
 
 // Define the router
 const router = useRouter()
@@ -97,27 +107,40 @@ const registeration = async (e) => {
                 required
               ></v-text-field>
 
-              <!-- Password Input -->
-              <v-text-field
-                v-model="password"
-                label="Password"
-                type="password"
-                outlined
-                dense
-                class="mb-4"
-                required
-              ></v-text-field>
+             <!-- Password Input -->
+            <v-text-field
+              v-model="password"
+              :type="showPassword ? 'text' : 'password'"
+              label="Password"
+              outlined
+              dense
+              class="mb-4"
+              required
+            >
+              <template #append-inner>
+                <v-icon @click="toggleVisibility('password')" class="cursor-pointer">
+                  {{ showPassword ? 'mdi-eye' : 'mdi-eye-off' }}
+                </v-icon>
+              </template>
+            </v-text-field>
 
-              <!-- Confirm Password Input -->
-              <v-text-field
-                v-model="confirmPassword"
-                label="Confirm Password"
-                type="password"
-                outlined
-                dense
-                class="mb-4"
-                required
-              ></v-text-field>
+            <!-- Confirm Password Input -->
+            <v-text-field
+              v-model="confirmPassword"
+              :type="showConfirmPassword ? 'text' : 'password'"
+              label="Confirm Password"
+              outlined
+              dense
+              class="mb-4"
+              required
+            >
+              <template #append-inner>
+                <v-icon @click="toggleVisibility('confirm')" class="cursor-pointer">
+                  {{ showConfirmPassword ? 'mdi-eye' : 'mdi-eye-off' }}
+                </v-icon>
+              </template>
+            </v-text-field>
+
 
               <!-- Error Message -->
               <v-alert v-if="errorMessage" type="error" class="mb-4" border="left" colored-border>
