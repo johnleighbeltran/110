@@ -22,7 +22,7 @@ onMounted(async () => {
   <v-app>
     <div>
       <!-- Conditionally render the layout for 'landing', 'login', and 'register' routes -->
-      <div v-if="route.name === 'landing' || route.name === 'login' || route.name === 'register'" class="background-color">
+      <div v-if="route.name === 'aboutus' || route.name === 'login' || route.name === 'register'" class="background-color">
         <!-- Navbar -->
         <nav class="navbar bg-body-tertiary fixed-top shadow-sm">
           <div class="container-fluid">
