@@ -9,8 +9,14 @@ let password = ref('')
 let loading = ref(false)
 let forgotPasswordEmail = ref('')
 let selectedRole = ref('user') // Default role is 'user'
+const showPassword = ref(false)
 
 const router = useRouter()
+
+
+const togglePasswordVisibility = () => {
+  showPassword.value = !showPassword.value
+}
 
 // Login Function
 const login = async (e) => {
@@ -70,6 +76,8 @@ const sendPasswordReset = async () => {
     alert('Password reset link sent! Please check your email.')
   }
 }
+
+
 </script>
 
 <template>
@@ -105,16 +113,22 @@ const sendPasswordReset = async () => {
                 class="mb-3"
               ></v-text-field>
 
-              <!-- Password Field -->
-              <v-text-field
-                v-model="password"
-                label="Password"
-                type="password"
-                required
-                outlined
-                dense
-                class="mb-1"
-              ></v-text-field>
+            <!-- Password Field -->
+            <v-text-field
+              v-model="password"
+              :type="showPassword ? 'text' : 'password'"
+              label="Password"
+              required
+              outlined
+              dense
+              class="mb-1"
+            >
+              <template #append-inner>
+                <v-icon @click="togglePasswordVisibility" class="cursor-pointer">
+                  {{ showPassword ? 'mdi-eye' : 'mdi-eye-off' }}
+                </v-icon>
+              </template>
+            </v-text-field>
 
               <!-- Forgot Password -->
               <div class="text-right mb-3">
@@ -182,10 +196,6 @@ const sendPasswordReset = async () => {
 
 .primary-btn:hover {
   background-color: #4a148c;
-}
-
-.v-icon {
-  animation: spin 1s infinite linear;
 }
 
 @keyframes spin {
