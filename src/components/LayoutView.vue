@@ -62,12 +62,6 @@ onMounted(async () => {
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item to="/claims" router-link>
-            <v-list-item-content>
-              <v-list-item-title>My Claims</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-
            <v-list-item to="/claimsReport" router-link>
             <v-list-item-content>
               <v-list-item-title>My Claims & Reports</v-list-item-title>
@@ -119,9 +113,6 @@ onMounted(async () => {
         <v-btn to="/browse" router-link text>
           <span class="mdi mdi-note-search"></span>
         </v-btn>
-        <v-btn to="/claims" router-link text>
-          <span class="mdi-file-document-outline"></span>
-        </v-btn>
           <v-btn to="/claimsReport" router-link text>
           <span class="mdi-file-document-outline"></span>
         </v-btn>
@@ -162,9 +153,11 @@ onMounted(async () => {
 
 /* Resize logo and center it */
 .logo {
-  width: 50%; /* Resize logo to 50% of the available width */
+  display: block; /* Center the logo */
+  margin: 0 auto; /* Center the logo */
+  max-width: 100%; 
   height: auto; /* Maintain aspect ratio */
-  margin: 20px auto; /* Center logo with margin */
+  width: 30%; /* Adjust logo size */
 }
 
 /* Adjusting navigation drawer behavior on small screens */
