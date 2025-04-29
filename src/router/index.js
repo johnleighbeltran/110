@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { authGuard, guestGuard, adminGuard } from './Authguard'
+import { authGuard, guestGuard, adminGuard } from './AuthGuard'
 
 import AboutUsView from '../views/user/AboutUsView.vue'
 import LoginView from '@/views/user/LoginView.vue'
@@ -82,4 +82,3 @@ const router = createRouter({
 })
 
 export default router
-
