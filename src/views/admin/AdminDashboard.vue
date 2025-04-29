@@ -11,6 +11,14 @@ const loading = ref(true);
 const selectedClaim = ref(null); // Store the selected claim
 const approvalNotes = ref(''); // Store the approval/rejection notes
 const users = ref([])
+const menu = ref(false) // For the avatar menu
+
+
+async function logout() {
+  menu.value = false
+  localStorage.removeItem('isAdmin')
+  router.push('/')
+}
 
 
 const mostReportedItems = computed(() => {
@@ -182,26 +190,27 @@ onMounted(() => {
   <v-spacer></v-spacer>
   <!-- Avatar and Dropdown Menu -->
   <v-col cols="auto" class="d-flex justify-end">
-    <v-menu
-      v-model="menu"
-      offset-y
-      transition="slide-y-reverse-transition"
-    >
-      <template #activator="{ on, attrs }">
-        <v-avatar size="40" class="cursor-pointer" v-bind="attrs" v-on="on">
-          <v-img src="https://randomuser.me/api/portraits/men/1.jpg" alt="Avatar"></v-img>
-        </v-avatar>
-      </template>
-      
-      <v-list>
-        <v-list-item @click="goToSettings">
-          <v-list-item-title>Settings</v-list-item-title>
-        </v-list-item>
-        <v-list-item @click="logout">
-          <v-list-item-title>Logout</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-menu>
+ <v-menu
+    v-model="menu"
+    offset-y
+    transition="slide-y-reverse-transition"
+  >
+    <template #activator="{ props }">
+      <v-avatar
+        size="40"
+        class="cursor-pointer"
+        v-bind="props"
+      >
+        <v-img src="https://randomuser.me/api/portraits/men/1.jpg" alt="Avatar" />
+      </v-avatar>
+    </template>
+
+    <v-list>
+      <v-list-item @click="logout">
+        <v-list-item-title>Logout</v-list-item-title>
+      </v-list-item>
+    </v-list>
+  </v-menu>
   </v-col>
 </v-row>
 
