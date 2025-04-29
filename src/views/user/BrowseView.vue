@@ -59,7 +59,7 @@
       <v-col
         v-for="(item, index) in filteredItems"
         :key="index"
-        cols="12" sm="6" md="4" lg="3"
+        cols="12" sm="8" md="4" lg="5"
       >
         <v-card>
           <v-img
@@ -81,8 +81,14 @@
             </v-col>
             <!-- Claim Button -->
             <v-col class="text-center">
-              <v-btn color="primary" @click="claimItem(item)">Claim</v-btn>
-            </v-col>
+            <v-btn
+              :color="item.status === 'claimed' ? 'black' : 'primary'"
+              :disabled="item.status === 'claimed'"
+              @click="item.status !== 'claimed' && claimItem(item)"
+            >
+              {{ item.status === 'claimed' ? 'Claimed' : 'Claim' }}
+            </v-btn>
+          </v-col>
           </v-row>
         </v-card>
       </v-col>
@@ -168,6 +174,10 @@ const filteredItems = computed(() => {
 // Claim item function that navigates to the claims page with itemId
 const claimItem = (item) => {
   // Navigate to the claims page with item id as a route parameter
+  if(item.status === "claimed"){
+    alert("This item has already been claimed.");
+    return;
+  }
   console.log('Claiming item:', item.id);
   router.push({ name: 'claims', params: { itemId: item.id } });
 };
