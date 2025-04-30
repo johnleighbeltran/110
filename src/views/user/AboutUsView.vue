@@ -32,7 +32,7 @@ import Layout from '@/components/AuthLayout.vue'
                 <v-col cols="12" md="6">
                   <h2 class="section-heading">Our Mission</h2>
                   <p class="section-text">
-                    At Lost & Found, our mission is simple: to help individuals recover their misplaced belongings and give honest finders a way to return them.
+                    At Claimpoint, our mission is simple: to help individuals recover their misplaced belongings and give honest finders a way to return them.
                     We believe that honesty, trust, and community collaboration can make the world a better place — one lost item at a time.
                   </p>
 
@@ -82,7 +82,7 @@ import Layout from '@/components/AuthLayout.vue'
 <style scoped>
 .about-wrapper {
   min-height: 100vh;
-  background: linear-gradient(to bottom right, #e0f7fa, #e1d5e7);
+  background: linear-gradient(to bottom right, #FFA726, #FFA726);
   padding-bottom: 40px;
 }
 
@@ -99,7 +99,7 @@ import Layout from '@/components/AuthLayout.vue'
 }
 
 .about-card {
-  background-color: #fff;
+  background-color: #FFE0B2;
   border-radius: 12px;
 }
 

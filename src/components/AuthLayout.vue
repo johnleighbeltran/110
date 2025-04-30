@@ -22,11 +22,14 @@ onMounted(async () => {
   <v-app>
     <div>
       <!-- Conditionally render the layout for 'landing', 'login', and 'register' routes -->
-      <div v-if="route.name === 'aboutus' || route.name === 'login' || route.name === 'register'" class="background-color">
+      <div
+        v-if="route.name === 'aboutus' || route.name === 'login' || route.name === 'register'"
+        class="background-color"
+      >
         <!-- Navbar -->
         <nav class="navbar bg-body-tertiary fixed-top shadow-sm">
           <div class="container-fluid">
-            <h1 class="navbar-brand" href="#">LOst&Found</h1>
+            <h1 class="navbar-brand" href="#">Claimpoint</h1>
             <button
               class="navbar-toggler"
               type="button"
@@ -55,7 +58,9 @@ onMounted(async () => {
               <div class="offcanvas-body">
                 <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                   <li class="nav-item">
-                    <RouterLink class="nav-link active" aria-current="page" to="/">About Us</RouterLink>
+                    <RouterLink class="nav-link active" aria-current="page" to="/"
+                      >About Us</RouterLink
+                    >
                   </li>
                   <li class="nav-item">
                     <RouterLink class="nav-link" to="/login">Login</RouterLink>
@@ -77,21 +82,6 @@ onMounted(async () => {
           <!-- Content Slot -->
           <slot></slot>
         </div>
-
-        <!-- Bottom Navbar -->
-        <div class="fixed-bottom bg-dark border-top">
-          <div class="container d-flex justify-content-around py-2 px-3">
-            <RouterLink to="/login" class="text-center text-decoration-none text-light">
-              <i class="bi bi-box-arrow-in-right"></i>
-              <div>Login</div>
-            </RouterLink>
-
-            <RouterLink to="/register" class="text-center text-decoration-none text-light">
-              <i class="bi bi-person-plus"></i>
-              <div>Register</div>
-            </RouterLink>
-          </div>
-        </div>
       </div>
 
       <!-- For other routes, render only the content -->
@@ -106,13 +96,13 @@ onMounted(async () => {
 <style scoped>
 /* Background & Layout */
 .background-color {
-  background: linear-gradient(135deg, #e0f7fa, #e1bee7);
+  background: linear-gradient(135deg, #FFCC80, #FFCC80);
   min-height: 100vh;
 }
 
 /* Navbar Styles */
 .navbar {
-  background: #ffffff !important;
+  background: #FFA726 !important;
   padding: 0.8rem 1.2rem;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
@@ -120,7 +110,7 @@ onMounted(async () => {
 .navbar-brand {
   font-weight: 700;
   font-size: 1.8rem;
-  color: #673ab7;
+  color: #333;
   letter-spacing: 1px;
 }
 
@@ -131,17 +121,17 @@ onMounted(async () => {
 }
 
 .nav-link:hover {
-  color: #6a1b9a;
+  color: #E65100;
 }
 
 /* Offcanvas Styles */
 .offcanvas-body {
-  background: #fafafa;
+  background: #FFCC80;
 }
 
 .offcanvas-header {
-  background: #f5f5f5;
-  border-bottom: 1px solid #ddd;
+  background: #FFA726;
+  border-bottom: 0px solid #ddd;
 }
 
 .offcanvas-title {
@@ -150,17 +140,19 @@ onMounted(async () => {
 }
 
 .nav-item {
-  background-color: #e1bee7;
+  background-color: #FFA726;
   padding: 10px 16px;
   border-radius: 24px;
   margin-bottom: 10px;
   text-align: center;
   font-weight: 600;
-  transition: background-color 0.3s ease, transform 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    transform 0.3s ease;
 }
 
 .nav-item:hover {
-  background-color: #ce93d8;
+  background-color: #FFE0B2;
   transform: translateY(-2px);
 }
 
@@ -177,7 +169,7 @@ onMounted(async () => {
 
 /* Footer (Bottom Navbar) */
 .fixed-bottom {
-  background-color: #6a1b9a;
+  background-color: #E65100;
   padding: 10px 0;
 }
 
@@ -224,8 +216,14 @@ p.lead {
 }
 
 @keyframes fadeIn {
-  0% { opacity: 0; transform: translateY(-20px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .fst-italic {

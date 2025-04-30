@@ -151,7 +151,7 @@ const sendPasswordReset = async () => {
 
               <!-- Forgot Password -->
               <div class="text-right mb-3">
-                <v-btn text small color="primary" @click="sendPasswordReset">
+                <v-btn text small color="orange-darken-1" @click="sendPasswordReset">
                   Forgot Password?
                 </v-btn>
               </div>
@@ -178,7 +178,7 @@ const sendPasswordReset = async () => {
             <v-row class="mt-5" justify="center">
               <v-col class="text-center">
                 <small>Don't have an account?
-                  <v-btn text @click="router.push('/register')">Sign up</v-btn>
+                  <v-btn text color="orange-darken-1" @click="router.push('/register')">Sign up</v-btn>
                 </small>
               </v-col>
             </v-row>
@@ -193,19 +193,19 @@ const sendPasswordReset = async () => {
 <style scoped>
 .login-container {
   min-height: 90vh;
-  background: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);
+  background: #FFCC80;
   display: flex;
   align-items: center;
 }
 
 .login-card {
   border-radius: 16px;
-  background-color: #fff;
+  background-color: #FFF3E0;
   width: 100%;
 }
 
 .primary-btn {
-  background-color: #6a1b9a;
+  background-color: #FB8C00;
   color: white;
   font-weight: bold;
   border-radius: 12px;
@@ -214,7 +214,7 @@ const sendPasswordReset = async () => {
 }
 
 .primary-btn:hover {
-  background-color: #4a148c;
+  background-color: #E65100;
 }
 
 @keyframes spin {
