@@ -190,7 +190,7 @@ const uploadImage = async (event) => {
                 <div class="my-3">
                   <v-btn
                     small
-                    color="primary"
+                    color="orange-darken-3"
                     @click="$refs.fileInput.click()"
                     :loading="uploading"
                   >
