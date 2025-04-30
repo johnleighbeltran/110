@@ -244,12 +244,12 @@ const uploadImage = async (event) => {
       </v-app-bar>
 
       <!-- Main Content -->
-      <v-main>
+            <v-main >
         <v-container fluid class="pa-4">
-          <v-row justify="center">
+          <v-row justify="center" >
             <v-col cols="12" sm="10" md="20" lg="9">
-              <v-card class="elevation-2" outlined>
-                <v-card-title class="text-center">
+              <v-card class="elevation-10 bg-orange-lighten-4" outlined>
+                <v-card-title class="text-center bg-orange-lighten-4">
                   <!-- Dynamic title based on current content -->
                   <span v-if="route.name === 'dashboard'"></span>
                   <span v-if="route.name === 'foundlost'"></span>
@@ -258,9 +258,9 @@ const uploadImage = async (event) => {
                   <span v-if="route.name === 'claims'"></span>
                 </v-card-title>
 
-                <v-card-text>
+                <v-card-text class="bg-orange-lighten-4">
                   <!-- Dynamic content based on current route -->
-                  <router-view></router-view>
+                  <router-view class="bg-orange-lighten-4"></router-view>
                 </v-card-text>
               </v-card>
             </v-col>
@@ -269,19 +269,18 @@ const uploadImage = async (event) => {
       </v-main>
 
       <!-- Bottom Navigation Bar (visible on small screens) -->
-      <v-bottom-navigation v-if="isSmallScreen" app color="primary" dark>
+      <v-bottom-navigation v-if="isSmallScreen" app color="orange-darken-4" dark>
         <v-btn to="/dashboard" router-link text>
-          <span class="mdi mdi-view-dashboard"></span>
+          <span class="mdi mdi-monitor-dashboard"> Dashboard</span>
         </v-btn>
         <v-btn to="/foundlost" router-link text>
-          <span class="mdi mdi-check-circle-outline"></span>
-          <span class="mdi mdi-alert-circle-outline"></span>
+          <span class="mdi mdi-file-send-outline"> Report</span>
         </v-btn>
         <v-btn to="/browse" router-link text>
-          <span class="mdi mdi-note-search"></span>
+          <span class="mdi mdi-card-search-outline"> Browse</span>
         </v-btn>
         <v-btn to="/claimsReport" router-link text>
-          <span class="mdi-file-document-outline"></span>
+          <span class="mdi mdi-history"> History</span>
         </v-btn>
       </v-bottom-navigation>
     </template>
