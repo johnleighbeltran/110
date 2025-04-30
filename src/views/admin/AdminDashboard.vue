@@ -180,7 +180,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-container fluid>
+  <v-container fluid class="bg-orange-lighten-2">
 <v-row class="mb-4" align="center">
   <!-- Centered heading -->
   <v-col cols="auto" class="d-flex justify-center">
@@ -368,8 +368,8 @@ onMounted(() => {
 /* --- Overall Card Layout --- */
 .v-card {
   border-radius: 18px;
-  background: #ffffff;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  background: #FFB74D;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0);
   margin-bottom: 28px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
