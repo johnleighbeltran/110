@@ -451,7 +451,7 @@ li {
   border-radius: 12px;
   overflow: hidden;
 }
-
+ 
 /* --- Avatar Menu --- */
 .v-avatar {
   border: 2px solid #6a1b9a;
