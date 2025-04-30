@@ -155,7 +155,7 @@ const registeration = async (e) => {
               <!-- Register Button -->
               <v-btn
                 type="submit"
-                color="primary"
+                color=orange-darken-1
                 block
                 large
                 class="rounded-lg font-weight-bold mb-2"
@@ -182,14 +182,14 @@ const registeration = async (e) => {
 
 <style scoped>
 .v-container {
-  background: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);
+  background: #FFCC80;
   min-height: 100vh;
   padding-top: 40px;
 }
 
 /* Card Styles */
 .v-card {
-  background-color: #ffffff;
+  background-color: #FFF3E0;
   border-radius: 20px;
   box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.08);
   padding: 32px;
@@ -203,7 +203,7 @@ const registeration = async (e) => {
 .v-card-title h2 {
   font-size: 28px;
   font-weight: bold;
-  color: #6a1b9a;
+  color: rgb(46, 45, 45);
 }
 
 .subtitle {
@@ -230,7 +230,7 @@ const registeration = async (e) => {
 }
 
 .v-btn:hover {
-  background-color: #4a148c !important;
+  background-color: #E65100 !important;
 }
 
 /* Alert Boxes */
@@ -241,7 +241,7 @@ const registeration = async (e) => {
 
 /* Link Text */
 .text-primary {
-  color: #6a1b9a !important;
+  color: #E65100 !important;
 }
 
 .text-primary:hover {
