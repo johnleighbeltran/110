@@ -1,55 +1,3 @@
-<template>
-  <v-container class="my-5" fluid>
-    <v-row justify="center">
-      <v-col cols="12" md="8" lg="6">
-        <v-card class="pa-6" elevation="4" rounded>
-          <v-card-title class="text-center">
-            <h3>Claim Item</h3>
-          </v-card-title>
-
-          <!-- Claim Form -->
-          <v-form @submit.prevent="submitClaim">
-            <!-- Reason for Claiming -->
-            <p>Claiming item with ID: {{ itemId }}</p>
-
-            <v-textarea
-              v-model="reason"
-              label="Reason for Claiming"
-              required
-              outlined
-              class="mb-4"
-              rows="4"
-              auto-grow
-            ></v-textarea>
-
-            <!-- Upload Proof -->
-            <v-file-input
-              v-model="file"
-              label="Upload Proof (Optional)"
-              outlined
-              dense
-              prepend-icon="mdi-upload"
-              class="custom-file-input"
-              @change="previewImage"
-            ></v-file-input>
-
-            <!-- Image Preview -->
-            <v-img 
-              v-if="imageUrl"
-              :src="imageUrl"
-              max-width="300"
-              class="my-4"
-            ></v-img>
-
-            <!-- Submit Button -->
-            <v-btn type="submit" color="primary" block large>Submit Claim</v-btn>
-          </v-form>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
-</template>
-
 <script>
 import { ref, onMounted } from 'vue';
 import { supabase } from '@/supabase';  // Import Supabase client
@@ -179,8 +127,63 @@ export default {
 };
 </script>
 
+<template>
+  <v-container class="my-5" fluid >
+    <v-row justify="center">
+      <v-col cols="12" md="8" lg="6">
+        <v-card class="pa-6 bg-orange-lighten-5" elevation="4" rounded>
+          <v-card-title class="text-center">
+            <h3>Claim Item</h3>
+          </v-card-title>
+
+          <!-- Claim Form -->
+          <v-form @submit.prevent="submitClaim">
+            <!-- Reason for Claiming -->
+            <p>Claiming item with ID: {{ itemId }}</p>
+
+            <v-textarea
+              v-model="reason"
+              label="Reason for Claiming"
+              required
+              outlined
+              class="mb-4"
+              rows="4"
+              auto-grow
+            ></v-textarea>
+
+            <!-- Upload Proof -->
+            <v-file-input
+              v-model="file"
+              label="Upload Proof (Optional)"
+              outlined
+              dense
+              prepend-icon="mdi-upload"
+              class="custom-file-input"
+              @change="previewImage"
+            ></v-file-input>
+
+            <!-- Image Preview -->
+            <v-img 
+              v-if="imageUrl"
+              :src="imageUrl"
+              max-width="300"
+              class="my-4"
+            ></v-img>
+
+            <!-- Submit Button -->
+            <v-btn type="submit" color="orange-lighten-1" block large>Submit Claim</v-btn>
+          </v-form>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
+
+
+
 <style scoped>
 .custom-file-input {
   font-size: 14px;
 }
+
 </style>

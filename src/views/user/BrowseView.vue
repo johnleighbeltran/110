@@ -1,3 +1,84 @@
+<script setup>
+import { ref, computed, onMounted } from 'vue';
+import { supabase } from '@/supabase'; // Assuming you have Supabase client set up
+
+
+import { useRouter } from 'vue-router'; // Import useRouter to navigate
+
+const router = useRouter(); // Initialize router
+
+// Data for search, categories, and locations
+const searchQuery = ref('');
+const selectedCategory = ref(null);
+const selectedDate = ref('');
+const selectedLocation = ref(null);
+const dateMenu = ref(false);
+
+// State for fetched report items
+const reportItems = ref([]);
+const categories = ref([]);
+const locations = ref([]);
+
+// Fetch all report items from Supabase
+const fetchAllReportItems = async () => {
+  try {
+    const { data, error } = await supabase
+      .from('reportitems') // Replace with your actual table name
+      .select('*');
+
+    if (error) {
+      console.error('Error fetching data:', error);
+      return;
+    }
+
+    reportItems.value = data; // Store the fetched data in the reportItems variable
+
+    // Extract unique categories and locations from fetched data
+    categories.value = [...new Set(data.map(item => item.category))];
+    locations.value = [...new Set(data.map(item => item.location))];
+
+  } catch (error) {
+    console.error('Error fetching report items:', error);
+  }
+};
+
+// Fetch data when the component is mounted
+onMounted(() => {
+  fetchAllReportItems();
+});
+
+// Computed property for filtered items
+const filteredItems = computed(() => {
+  return reportItems.value.filter((item) => {
+    const matchesSearchQuery =
+      item.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      item.location.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      item.date.includes(searchQuery.value);
+
+    const matchesCategory = !selectedCategory.value || item.category === selectedCategory.value;
+    const matchesLocation = !selectedLocation.value || item.location === selectedLocation.value;
+    const matchesDate = !selectedDate.value || item.date === selectedDate.value;
+
+    return (
+      matchesSearchQuery && matchesCategory && matchesLocation && matchesDate
+    );
+  });
+});
+
+// Claim item function that navigates to the claims page with itemId
+const claimItem = (item) => {
+  // Navigate to the claims page with item id as a route parameter
+  if(item.status === "claimed"){
+    alert("This item has already been claimed.");
+    return;
+  }
+  console.log('Claiming item:', item.id);
+  router.push({ name: 'claims', params: { itemId: item.id } });
+};
+
+</script>
+
 <template>
   <v-container fluid>
     <!-- Search Bar Section -->
@@ -82,7 +163,7 @@
             <!-- Claim Button -->
             <v-col class="text-center">
             <v-btn
-              :color="item.status === 'claimed' ? 'black' : 'primary'"
+              :color="item.status === 'claimed' ? 'black' : 'orange-darken-1'"
               :disabled="item.status === 'claimed'"
               @click="item.status !== 'claimed' && claimItem(item)"
             >
@@ -103,92 +184,11 @@
   </v-container>
 </template>
 
-<script setup>
-import { ref, computed, onMounted } from 'vue';
-import { supabase } from '@/supabase'; // Assuming you have Supabase client set up
-
-
-import { useRouter } from 'vue-router'; // Import useRouter to navigate
-
-const router = useRouter(); // Initialize router
-
-// Data for search, categories, and locations
-const searchQuery = ref('');
-const selectedCategory = ref(null);
-const selectedDate = ref('');
-const selectedLocation = ref(null);
-const dateMenu = ref(false);
-
-// State for fetched report items
-const reportItems = ref([]);
-const categories = ref([]);
-const locations = ref([]);
-
-// Fetch all report items from Supabase
-const fetchAllReportItems = async () => {
-  try {
-    const { data, error } = await supabase
-      .from('reportitems') // Replace with your actual table name
-      .select('*');
-
-    if (error) {
-      console.error('Error fetching data:', error);
-      return;
-    }
-
-    reportItems.value = data; // Store the fetched data in the reportItems variable
-
-    // Extract unique categories and locations from fetched data
-    categories.value = [...new Set(data.map(item => item.category))];
-    locations.value = [...new Set(data.map(item => item.location))];
-
-  } catch (error) {
-    console.error('Error fetching report items:', error);
-  }
-};
-
-// Fetch data when the component is mounted
-onMounted(() => {
-  fetchAllReportItems();
-});
-
-// Computed property for filtered items
-const filteredItems = computed(() => {
-  return reportItems.value.filter((item) => {
-    const matchesSearchQuery =
-      item.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      item.location.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      item.date.includes(searchQuery.value);
-
-    const matchesCategory = !selectedCategory.value || item.category === selectedCategory.value;
-    const matchesLocation = !selectedLocation.value || item.location === selectedLocation.value;
-    const matchesDate = !selectedDate.value || item.date === selectedDate.value;
-
-    return (
-      matchesSearchQuery && matchesCategory && matchesLocation && matchesDate
-    );
-  });
-});
-
-// Claim item function that navigates to the claims page with itemId
-const claimItem = (item) => {
-  // Navigate to the claims page with item id as a route parameter
-  if(item.status === "claimed"){
-    alert("This item has already been claimed.");
-    return;
-  }
-  console.log('Claiming item:', item.id);
-  router.push({ name: 'claims', params: { itemId: item.id } });
-};
-
-</script>
-
 <style scoped>
 /* Container padding */
 .v-container {
   padding-top: 40px;
-  background: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);
+  background: linear-gradient(135deg, #FFF3E0 0%, #e2d1c3 100%);
   min-height: 100vh;
 }
 
@@ -215,7 +215,7 @@ const claimItem = (item) => {
   overflow: hidden;
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  background: #ffffff;
+  background: #FFF3E0;
   margin-bottom: 30px;
   padding: 16px;
   min-height: 450px; /* Bigger card body */
@@ -230,20 +230,20 @@ const claimItem = (item) => {
 .v-card-title {
   font-size: 24px;
   font-weight: bold;
-  color: #4a148c;
+  color: #5f5f5f;
   margin-bottom: 10px;
 }
 
 .v-card-subtitle {
   font-size: 16px;
-  color: #757575;
+  color: #131212;
   margin-bottom: 6px;
 }
 
 /* Card Text */
 .v-card-text {
   font-size: 15px;
-  color: #5f5f5f;
+  color: #060606;
   margin-top: 6px;
 }
 
@@ -252,6 +252,7 @@ const claimItem = (item) => {
   height: 260px; /* Bigger Image */
   object-fit: cover;
   border-bottom: 1px solid #eee;
+  background-color: #FFE0B2;
   margin-bottom: 16px;
   border-radius: 14px;
 }
