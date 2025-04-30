@@ -112,7 +112,7 @@ const uploadImage = async (event) => {
       "
     >
       <!-- Navigation Drawer -->
-      <v-navigation-drawer app v-model="drawer" permanent width="250" clipped>
+      <v-navigation-drawer app v-model="drawer" permanent width="250" clipped color="orange lighten-2">
         <v-list dense>
           <!-- Logo Item -->
           <v-list-item @click="changeContent('dashboard')">
@@ -155,7 +155,7 @@ const uploadImage = async (event) => {
         <v-spacer></v-spacer>
         <v-btn icon @click="openProfileModal">
           <template v-if="user?.user_metadata?.avatar_url || profileImageUrl">
-            <v-avatar size="32">
+            <v-avatar size="50">
               <v-img
                 :src="user?.user_metadata?.avatar_url || profileImageUrl"
                 alt="Profile Picture"
@@ -163,7 +163,7 @@ const uploadImage = async (event) => {
             </v-avatar>
           </template>
           <template v-else>
-            <v-icon size="32">mdi-account-circle</v-icon>
+            <v-icon size="50">mdi-account-circle</v-icon>
           </template>
         </v-btn>
 
@@ -312,7 +312,7 @@ const uploadImage = async (event) => {
 }
 
 .v-card {
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 4px 8px rgb(255, 145, 0);
   padding: 16px;
 }
 
