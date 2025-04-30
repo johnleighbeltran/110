@@ -1,10 +1,9 @@
 <script setup>
-import { useRoute, useRouter } from 'vue-router' 
+import { useRoute, useRouter } from 'vue-router'
 import { ref, computed, onMounted } from 'vue'
 import { useDisplay } from 'vuetify' // Use the correct composable for breakpoints
 import { supabase } from '@/supabase' // Import Supabase client
 import logo from '@/assets/images/logo.png' // Import logo image
-
 
 // Computed property to check if the screen is small
 const display = useDisplay()
@@ -36,10 +35,11 @@ async function logout() {
   router.push('/login') // Redirect to login page after logout
 }
 
-
 // Fetch user information from Supabase when the component is mounted
 onMounted(async () => {
-  const { data: { user: currentUser } } = await supabase.auth.getUser()
+  const {
+    data: { user: currentUser },
+  } = await supabase.auth.getUser()
   if (currentUser) {
     user.value = currentUser
     // Check if email is confirmed
@@ -49,39 +49,39 @@ onMounted(async () => {
 
 // Upload image using user's preferred setup
 const uploadImage = async (event) => {
-  const file = event.target.files[0];
-  if (!file) return;
+  const file = event.target.files[0]
+  if (!file) return
 
-  uploading.value = true;
-  uploadError.value = null;
+  uploading.value = true
+  uploadError.value = null
 
   try {
-    const fileName = `${Date.now()}-${file.name}`;
-    
+    const fileName = `${Date.now()}-${file.name}`
+
     // Upload the image
     const { data, error: uploadErrorResult } = await supabase.storage
       .from('avatars')
-      .upload(fileName, file);
+      .upload(fileName, file)
 
     if (uploadErrorResult) {
-      uploadError.value = 'Error uploading image.';
-      console.error('Upload error:', uploadErrorResult);
-      return;
+      uploadError.value = 'Error uploading image.'
+      console.error('Upload error:', uploadErrorResult)
+      return
     }
 
     // Build public URL manually
-    const filePath = data.path;
-    const baseURL = 'https://bzijoejabwuaazggftcm.supabase.co';
-    const publicURL = `${baseURL}/storage/v1/object/public/avatars/${filePath}`;
+    const filePath = data.path
+    const baseURL = 'https://bzijoejabwuaazggftcm.supabase.co'
+    const publicURL = `${baseURL}/storage/v1/object/public/avatars/${filePath}`
 
-    profileImageUrl.value = publicURL;
+    profileImageUrl.value = publicURL
 
     // Update user's profile metadata in Supabase
     await supabase.auth.updateUser({
       data: {
         avatar_url: publicURL,
       },
-    });
+    })
 
     // Update local user metadata too to reflect new image immediately
     if (user.value) {
@@ -90,21 +90,27 @@ const uploadImage = async (event) => {
         avatar_url: publicURL,
       }
     }
-
   } catch (err) {
-    console.error('Unexpected upload error:', err);
-    uploadError.value = 'Unexpected error occurred.';
+    console.error('Unexpected upload error:', err)
+    uploadError.value = 'Unexpected error occurred.'
   } finally {
-    uploading.value = false;
+    uploading.value = false
   }
 }
-
 </script>
 
 <template>
   <v-app>
     <!-- Conditionally render the layout components for specific routes -->
-    <template v-if="route.name !== 'landing' && route.name !=='admindashboard' && route.name !== 'login' && route.name !== 'register' && isEmailConfirmed">
+    <template
+      v-if="
+        route.name !== 'landing' &&
+        route.name !== 'admindashboard' &&
+        route.name !== 'login' &&
+        route.name !== 'register' &&
+        isEmailConfirmed
+      "
+    >
       <!-- Navigation Drawer -->
       <v-navigation-drawer app v-model="drawer" permanent width="250" clipped>
         <v-list dense>
@@ -134,7 +140,7 @@ const uploadImage = async (event) => {
             </v-list-item-content>
           </v-list-item>
 
-           <v-list-item to="/claimsReport" router-link>
+          <v-list-item to="/claimsReport" router-link>
             <v-list-item-content>
               <v-list-item-title>My Claims & Reports</v-list-item-title>
             </v-list-item-content>
@@ -143,73 +149,98 @@ const uploadImage = async (event) => {
       </v-navigation-drawer>
 
       <!-- App Bar -->
-      <v-app-bar app color="primary" dark>
+      <v-app-bar app color="orange-darken-2" dark>
         <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-        <v-toolbar-title>LostFound</v-toolbar-title>
+        <v-toolbar-title>Claimpoint</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn icon @click="openProfileModal">
-          <v-icon><v-img :src="user?.user_metadata?.avatar_url || profileImageUrl || 'https://via.placeholder.com/150'" alt="Profile Picture" /></v-icon>
+          <template v-if="user?.user_metadata?.avatar_url || profileImageUrl">
+            <v-avatar size="32">
+              <v-img
+                :src="user?.user_metadata?.avatar_url || profileImageUrl"
+                alt="Profile Picture"
+              />
+            </v-avatar>
+          </template>
+          <template v-else>
+            <v-icon size="32">mdi-account-circle</v-icon>
+          </template>
         </v-btn>
 
         <v-dialog v-model="showProfileDialog" max-width="500">
-  <v-card>
-    <v-card-title class="headline text-center">Profile</v-card-title>
+          <v-card>
+            <v-card-title class="headline text-center">Profile</v-card-title>
 
-    <v-card-text class="text-center">
-      <div v-if="user">
-        <!-- Profile Image -->
-        <v-avatar size="100" class="mx-auto mb-3">
-          <v-img :src="user?.user_metadata?.avatar_url || profileImageUrl || 'https://via.placeholder.com/150'" alt="Profile Picture" />
-        </v-avatar>
+            <v-card-text class="text-center">
+              <div v-if="user">
+                <!-- Profile Image -->
+                <v-avatar size="100" class="mx-auto mb-3">
+                  <template v-if="user?.user_metadata?.avatar_url || profileImageUrl">
+                    <v-img
+                      :src="user?.user_metadata?.avatar_url || profileImageUrl"
+                      alt="Profile Picture"
+                    />
+                  </template>
+                  <template v-else>
+                    <v-icon size="100">mdi-account-circle</v-icon>
+                  </template>
+                </v-avatar>
 
-        <!-- Upload Button -->
-        <div class="my-3">
-          <v-btn small color="primary" @click="$refs.fileInput.click()" :loading="uploading">
-            Upload New Photo
-          </v-btn>
-          <input ref="fileInput" type="file" accept="image/*" class="d-none" @change="uploadImage" />
-        </div>
+                <!-- Upload Button -->
+                <div class="my-3">
+                  <v-btn
+                    small
+                    color="primary"
+                    @click="$refs.fileInput.click()"
+                    :loading="uploading"
+                  >
+                    Upload New Photo
+                  </v-btn>
+                  <input
+                    ref="fileInput"
+                    type="file"
+                    accept="image/*"
+                    class="d-none"
+                    @change="uploadImage"
+                  />
+                </div>
 
-        <!-- Upload Error Message -->
-        <div v-if="uploadError" class="error-message red--text text-caption">
-          {{ uploadError }}
-        </div>
+                <!-- Upload Error Message -->
+                <div v-if="uploadError" class="error-message red--text text-caption">
+                  {{ uploadError }}
+                </div>
 
-        <p class="mt-4"><strong>Email:</strong> {{ user.email }}</p>
-        <p><strong>User ID:</strong> {{ user.id }}</p>
-      </div>
-      <div v-else>
-        <p>Loading profile...</p>
-      </div>
-    </v-card-text>
+                <p class="mt-4"><strong>Email:</strong> {{ user.email }}</p>
+                <p><strong>User ID:</strong> {{ user.id }}</p>
+              </div>
+              <div v-else>
+                <p>Loading profile...</p>
+              </div>
+            </v-card-text>
 
-    <!-- Bottom Logout Icon -->
+            <!-- Bottom Logout Icon -->
 
-    <v-card-actions>
-  <v-spacer></v-spacer>
-  <v-btn icon color="error" @click="confirmLogout">
-    <v-icon>mdi-logout</v-icon>
-  </v-btn>
-</v-card-actions>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn icon color="error" @click="confirmLogout">
+                <v-icon>mdi-logout</v-icon>
+              </v-btn>
+            </v-card-actions>
 
+            <v-dialog v-model="showLogoutConfirm" max-width="400">
+              <v-card>
+                <v-card-title class="headline">Confirm Logout</v-card-title>
+                <v-card-text>Are you sure you want to logout?</v-card-text>
 
-    <v-dialog v-model="showLogoutConfirm" max-width="400">
-  <v-card>
-    <v-card-title class="headline">Confirm Logout</v-card-title>
-    <v-card-text>Are you sure you want to logout?</v-card-text>
-
-    <v-card-actions>
-      <v-spacer></v-spacer>
-      <v-btn text @click="showLogoutConfirm = false">Cancel</v-btn>
-      <v-btn color="error" text @click="logout">Logout</v-btn>
-    </v-card-actions>
-  </v-card>
-</v-dialog>
-
-  </v-card>
-</v-dialog>
-
-
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn text @click="showLogoutConfirm = false">Cancel</v-btn>
+                  <v-btn color="error" text @click="logout">Logout</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </v-card>
+        </v-dialog>
       </v-app-bar>
 
       <!-- Main Content -->
@@ -244,42 +275,40 @@ const uploadImage = async (event) => {
         </v-btn>
         <v-btn to="/foundlost" router-link text>
           <span class="mdi mdi-check-circle-outline"></span>
-           <span class="mdi mdi-alert-circle-outline"></span>
+          <span class="mdi mdi-alert-circle-outline"></span>
         </v-btn>
         <v-btn to="/browse" router-link text>
           <span class="mdi mdi-note-search"></span>
         </v-btn>
-          <v-btn to="/claimsReport" router-link text>
+        <v-btn to="/claimsReport" router-link text>
           <span class="mdi-file-document-outline"></span>
         </v-btn>
-        
-  
       </v-bottom-navigation>
     </template>
 
     <!-- For routes other than landing, login, or register, render only the content -->
     <v-main v-else>
-      <slot></slot> <!-- Render slot for the content of the current route -->
+      <slot></slot>
+      <!-- Render slot for the content of the current route -->
     </v-main>
   </v-app>
 </template>
 
-
 <style scoped>
 /* Styling for the app bar and navigation drawer */
 .v-app-bar {
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid #ef6c00;
 }
 
 /* Add custom styling for the content area */
 .v-main {
-  background-color: #f5f5f5;
+  background-color: #ffa726;
 }
 
 .v-container {
-  background-color: white;
+  background-color: #ffa726;
   padding: 20px;
-  border-radius: 8px;
+  border-radius: 20px; /* Updated border-radius */
 }
 
 .v-card {
@@ -291,14 +320,13 @@ const uploadImage = async (event) => {
 .logo {
   display: block; /* Center the logo */
   margin: 0 auto; /* Center the logo */
-  max-width: 100%; 
+  max-width: 100%;
   height: auto; /* Maintain aspect ratio */
   width: 30%; /* Adjust logo size */
 }
 
 /* Adjusting navigation drawer behavior on small screens */
 @media (max-width: 600px) {
-
   .v-app-bar-nav-icon {
     display: block;
   }
