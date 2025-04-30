@@ -368,7 +368,7 @@ onMounted(() => {
 /* --- Overall Card Layout --- */
 .v-card {
   border-radius: 18px;
-  background: #FFB74D;
+  background: #FFCC80;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0);
   margin-bottom: 28px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -383,7 +383,7 @@ onMounted(() => {
 .v-card-title {
   font-size: 24px;
   font-weight: 700;
-  background: linear-gradient(90deg, #191a19 0%, #b490ca 100%);
+  background: #191a19;
   color: white;
   padding: 20px;
   border-bottom: 1px solid #e0e0e0;
