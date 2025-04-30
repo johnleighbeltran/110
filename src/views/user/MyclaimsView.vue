@@ -96,7 +96,7 @@ const deleteReport = async (id) => {
       <v-col>
         <v-btn 
           block 
-          :color="currentTab === 0 ? 'primary' : 'default'" 
+          :color="currentTab === 0 ? 'orange-darken-4' : 'orange-lighten-5'" 
           @click="currentTab = 0">
           Claims
         </v-btn>
@@ -106,7 +106,7 @@ const deleteReport = async (id) => {
       <v-col>
         <v-btn 
           block 
-          :color="currentTab === 1 ? 'primary' : 'default'" 
+          :color="currentTab === 1 ? 'orange-darken-4' : 'orange-lighten-5'" 
           @click="currentTab = 1">
           Reports
         </v-btn>
@@ -117,7 +117,7 @@ const deleteReport = async (id) => {
     <v-window v-model="currentTab">
       <!-- Claims Content Section -->
       <v-window-item>
-        <v-card>
+        <v-card class="bg-orange-lighten-5">
           <v-card-title>Claims</v-card-title>
           <v-card-text v-for="(item, index) in claimedItems" :key="index">
             <v-card-title>{{ item.name }}</v-card-title>
@@ -144,7 +144,7 @@ const deleteReport = async (id) => {
 
       <!-- Reports Content Section -->
       <v-window-item>
-        <v-card>
+        <v-card class="bg-orange-lighten-5">
           <v-card-title>Reports</v-card-title>
           <v-card-text>
             <v-row v-for="(report, index) in reportItems" :key="index">
