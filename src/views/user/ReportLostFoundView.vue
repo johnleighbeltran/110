@@ -252,7 +252,7 @@ export default {
 <style scoped>
 /* Container */
 .v-container {
-  background: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);
+  background: #FFCC80;
   min-height: 100vh;
   padding-top: 40px;
 }
@@ -260,7 +260,7 @@ export default {
 /* Card */
 .v-card {
   border-radius: 20px;
-  background-color: #ffffff;
+  background-color: #FFF3E0;
   box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.08);
 }
 
@@ -268,7 +268,7 @@ export default {
 .v-card-title {
   font-size: 24px;
   font-weight: bold;
-  color: #6a1b9a;
+  color: rgb(40, 39, 39);
   margin-bottom: 20px;
 }
 
@@ -287,14 +287,14 @@ export default {
   font-weight: bold;
   padding: 14px 0;
   border-radius: 12px;
-  background-color: #6a1b9a;
+  background-color: #FB8C00 !important;
   color: #fff;
   letter-spacing: 1px;
   transition: background-color 0.3s ease;
 }
 
 .v-btn:hover {
-  background-color: #4a148c;
+  background-color: #c1761b;
 }
 
 /* File Upload and Image Preview */
