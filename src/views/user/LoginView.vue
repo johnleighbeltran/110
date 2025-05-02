@@ -101,22 +101,22 @@ const sendPasswordReset = async () => {
 
 <template>
   <Layout>
-    <v-container class="login-container" fluid>
+    <v-container class="d-flex justify-center align-center" >
       <v-row justify="center">
-        <v-col cols="12" md="5" class="d-flex flex-column align-center">
+        <v-col cols="12" sm="10" md="8" lg="6" xl="4">
           
           <!-- Logo -->
-          <v-img
+          <!-- <v-img
             src="https://upload.wikimedia.org/wikipedia/commons/a/ab/Logo_TV_2015.png"
             alt="Logo"
             max-width="140"
             class="mb-6"
-          ></v-img>
+          ></v-img> -->
 
           <!-- Login Card -->
-          <v-card class="pa-6 login-card" elevation="8">
+          <v-card class="pa-6 login-card" elevation="10">
             <v-card-title class="text-center mb-4">
-              <h3>Welcome Back</h3>
+              <h3 class="font-weight-bold mb-2">Welcome Back</h3>
               <p class="subtitle">Login to your account</p>
             </v-card-title>
 
@@ -175,7 +175,7 @@ const sendPasswordReset = async () => {
             </v-form>
 
             <!-- Sign Up Link -->
-            <v-row class="mt-5" justify="center">
+            <v-row class="mt-3" justify="center">
               <v-col class="text-center">
                 <small>Don't have an account?
                   <v-btn text color="orange-darken-1" @click="router.push('/register')">Sign up</v-btn>

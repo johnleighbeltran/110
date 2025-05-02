@@ -76,7 +76,7 @@ onMounted(async () => {
         </nav>
 
         <!-- Main Content -->
-        <div class="container py-5 mt-10">
+        <div class="container py-4 mt-5">
           <div class="col-sm-12 text-center">
             <img id="logo" :src="logo" width="50%" height="5%" alt="Logo" />
           </div>
@@ -95,6 +95,7 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+
 /* Background & Layout */
 .background-color {
   background: linear-gradient(135deg, #ffcc80, #ffcc80);
@@ -169,7 +170,7 @@ onMounted(async () => {
 }
 
 /* Footer (Bottom Navbar) */
-.fixed-bottom {
+/* .fixed-bottom {
   background-color: #e65100;
   padding: 10px 0;
 }
@@ -181,7 +182,7 @@ onMounted(async () => {
 
 .fixed-bottom .text-light:hover {
   color: #ffcc80 !important;
-}
+} */
 
 /* Typography */
 h1 {
@@ -243,4 +244,5 @@ p.lead {
 .offcanvas-body {
   padding: 20px;
 }
+
 </style>
