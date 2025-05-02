@@ -222,8 +222,9 @@ const uploadImage = async (event) => {
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn icon color="error" @click="confirmLogout">
-                <v-icon>mdi-logout</v-icon>
+              <v-btn  icon color="error" @click="confirmLogout" class="me-6">
+                Log Out
+                <v-icon >mdi-logout</v-icon>
               </v-btn>
             </v-card-actions>
 
@@ -269,7 +270,7 @@ const uploadImage = async (event) => {
       </v-main>
 
       <!-- Bottom Navigation Bar (visible on small screens) -->
-      <v-bottom-navigation v-if="isSmallScreen" app color="orange-darken-4" dark>
+      <!-- <v-bottom-navigation v-if="isSmallScreen" app color="orange-darken-4" dark>
         <v-btn to="/dashboard" router-link text>
           <span class="mdi mdi-monitor-dashboard"> Dashboard</span>
         </v-btn>
@@ -282,7 +283,7 @@ const uploadImage = async (event) => {
         <v-btn to="/claimsReport" router-link text>
           <span class="mdi mdi-history"> History</span>
         </v-btn>
-      </v-bottom-navigation>
+      </v-bottom-navigation> -->
     </template>
 
     <!-- For routes other than landing, login, or register, render only the content -->

@@ -18,7 +18,7 @@ import Layout from '@/components/AuthLayout.vue'
             />
             <h1 class="about-title">About Us</h1>
             <p class="about-subtitle">
-              Reuniting people with what matters most.
+              Reuniting people with what matters them most.
             </p>
           </v-col>
         </v-row>
