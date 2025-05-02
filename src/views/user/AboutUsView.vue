@@ -5,7 +5,7 @@ import Layout from '@/components/AuthLayout.vue'
 <template>
   <Layout>
     <div class="about-wrapper">
-      <v-container fluid class="py-10">
+      <v-container fluid class="py-10 ">
 
         <!-- Logo and Title -->
         <v-row justify="center" class="mb-8">
@@ -63,7 +63,7 @@ import Layout from '@/components/AuthLayout.vue'
         </v-row>
 
         <!-- Bottom Illustration -->
-        <v-row justify="center" class="mt-10">
+        <!-- <v-row justify="center" class="mt-10">
           <v-col cols="12" md="6" class="text-center">
             <v-img
               src="https://illustrations.popsy.co/gray/community-reconnect.svg"
@@ -72,7 +72,7 @@ import Layout from '@/components/AuthLayout.vue'
               alt="Community Illustration"
             />
           </v-col>
-        </v-row>
+        </v-row> -->
 
       </v-container>
     </div>

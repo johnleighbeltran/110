@@ -112,7 +112,14 @@ const uploadImage = async (event) => {
       "
     >
       <!-- Navigation Drawer -->
-      <v-navigation-drawer app v-model="drawer" permanent width="250" clipped color="orange lighten-2">
+      <v-navigation-drawer
+        app
+        v-model="drawer"
+        permanent
+        width="250"
+        clipped
+        color="orange lighten-2"
+      >
         <v-list dense>
           <!-- Logo Item -->
           <v-list-item @click="changeContent('dashboard')">
@@ -149,9 +156,9 @@ const uploadImage = async (event) => {
       </v-navigation-drawer>
 
       <!-- App Bar -->
-      <v-app-bar app color="orange-darken-2" dark>
+      <v-app-bar app color="orange-darken-2 text-black" dark>
         <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-        <v-toolbar-title>Claimpoint</v-toolbar-title>
+        <v-toolbar-title class="text-h5 font-weight-black">ClaimPoint</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn icon @click="openProfileModal">
           <template v-if="user?.user_metadata?.avatar_url || profileImageUrl">
@@ -222,9 +229,9 @@ const uploadImage = async (event) => {
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn  icon color="error" @click="confirmLogout" class="me-6">
+              <v-btn icon color="error" @click="confirmLogout" class="me-6">
                 Log Out
-                <v-icon >mdi-logout</v-icon>
+                <v-icon>mdi-logout</v-icon>
               </v-btn>
             </v-card-actions>
 
@@ -245,9 +252,9 @@ const uploadImage = async (event) => {
       </v-app-bar>
 
       <!-- Main Content -->
-            <v-main >
+      <v-main>
         <v-container fluid class="pa-4">
-          <v-row justify="center" >
+          <v-row justify="center">
             <v-col cols="12" sm="10" md="20" lg="9">
               <v-card class="elevation-10 bg-orange-lighten-4" outlined>
                 <v-card-title class="text-center bg-orange-lighten-4">

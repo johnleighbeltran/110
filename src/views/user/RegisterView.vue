@@ -74,7 +74,7 @@ const registeration = async (e) => {
 
 <template>
   <Layout>
-    <v-container class="d-flex justify-center align-center" style="height: 100vh;">
+    <v-container class="d-flex justify-center align-center" >
       <v-row justify="center">
         <v-col cols="12" sm="10" md="8" lg="6" xl="4">
           <v-card class="pa-6" elevation="10" rounded>
@@ -181,11 +181,11 @@ const registeration = async (e) => {
 </template>
 
 <style scoped>
-.v-container {
+/* .v-container {
   background: #FFCC80;
   min-height: 100vh;
-  padding-top: 40px;
-}
+  padding-top: 1px;
+} */
 
 /* Card Styles */
 .v-card {
