@@ -301,6 +301,24 @@ const uploadImage = async (event) => {
   </v-app>
 </template>
 
+<!-- GLOBAL STYLES -->
+<style>
+html, body {
+  overflow-x: hidden !important;
+  padding-right: 0 !important;
+  margin-right: 0 !important;
+}
+
+body.offcanvas-backdrop,
+body.modal-open {
+  padding-right: 0 !important;
+}
+
+.v-application {
+  overflow-x: hidden !important;
+}
+</style>
+
 <style scoped>
 /* Styling for the app bar and navigation drawer */
 .v-app-bar {
