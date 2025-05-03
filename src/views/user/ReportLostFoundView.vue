@@ -76,7 +76,8 @@
               required
             ></v-select>
 
-            <v-menu v-model="menu" :close-on-content-click="false" offset-y>
+            <!-- Select Date -->
+            <v-menu v-model="menu" :close-on-content-click="false" offset-y >
               <template v-slot:activator="{ on, attrs }">
                 <v-text-field
                   v-model="date"
@@ -121,7 +122,7 @@ export default {
     const date = ref('');
     const file = ref(null);
     const imageUrl = ref('');
-    const status = ref('found');  // Default status is 'pending'
+    const status = ref('Found');  // Default status is 'pending'
 
     // Max Date (Prevent Future Dates)
     const maxDate = ref(new Date().toISOString().substr(0, 10));
