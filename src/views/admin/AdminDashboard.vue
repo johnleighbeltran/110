@@ -2,6 +2,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { supabase } from '@/supabase'; // Your supabase setup
 import { createClient } from '@supabase/supabase-js'
+import { useRouter, useRoute } from 'vue-router';
 
 // State
 const reportItems = ref([]);
@@ -12,7 +13,8 @@ const selectedClaim = ref(null); // Store the selected claim
 const approvalNotes = ref(''); // Store the approval/rejection notes
 const users = ref([])
 const menu = ref(false) // For the avatar menu
-
+const router = useRouter(); 
+  
 
 async function logout() {
   menu.value = false
