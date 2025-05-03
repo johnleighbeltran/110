@@ -148,17 +148,17 @@ const claimItem = (item) => {
             height="200px"
           ></v-img>
           <v-card-title>{{ item.name }}</v-card-title>
-          <v-card-subtitle>catergory: {{ item.category }}</v-card-subtitle>
-          <v-card-subtitle>location: {{ item.location }}</v-card-subtitle>
-          <v-card-subtitle>date: {{ item.date }}</v-card-subtitle>
+          <v-card-subtitle>Category: {{ item.category }}</v-card-subtitle>
+          <v-card-subtitle>Location: {{ item.location }}</v-card-subtitle>
+          <v-card-subtitle>Date: {{ item.date }}</v-card-subtitle>
           <v-card-text>
-            description: {{ item.description }}
+            Description: {{ item.description }}
           </v-card-text>
 
           <!-- Found Location -->
           <v-row class="px-4" justify="space-between">
             <v-col>
-              <v-chip color="info" dark>location: {{ item.location }}</v-chip>
+              <v-chip color="info" dark>Location: {{ item.location }}</v-chip>
             </v-col>
             <!-- Claim Button -->
             <v-col class="text-center">
@@ -177,8 +177,8 @@ const claimItem = (item) => {
 
     <!-- No results message -->
     <v-row justify="center" v-if="!filteredItems.length">
-      <v-col cols="12" class="text-center">
-        <v-alert type="info">No items found matching your criteria.</v-alert>
+      <v-col cols="12" class="text-center ">
+        <v-alert type="error"  color="red">No items found matching your criteria.</v-alert>
       </v-col>
     </v-row>
   </v-container>
