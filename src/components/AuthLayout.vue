@@ -27,7 +27,7 @@ onMounted(async () => {
         class="background-color"
       >
         <!-- Navbar -->
-        <nav class="navbar bg-body-tertiary fixed-top shadow-sm">
+        <nav class="navbar bg-body-tertiary fixed-top shadow-sm text-black">
           <div class="container-fluid d-flex align-items-center justify-start">
             <button
               class="navbar-toggler me-2"
@@ -39,7 +39,7 @@ onMounted(async () => {
             >
               <span class="navbar-toggler-icon"></span>
             </button>
-            <h1 class="navbar-brand mb-0 ms-2">ClaimPoint</h1>
+            <h1 class=" mb-0 ms-2 text-h5 font-weight-black">ClaimPoint</h1>
           
             <div
               class="offcanvas offcanvas-start"
