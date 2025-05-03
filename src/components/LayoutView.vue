@@ -174,8 +174,8 @@ const uploadImage = async (event) => {
           </template>
         </v-btn>
 
-        <v-dialog v-model="showProfileDialog" class="diaglog-background" max-width="500">
-          <v-card>
+        <v-dialog v-model="showProfileDialog" max-width="500">
+          <v-card class="diaglog-background">
             <v-card-title class="headline text-center">Profile</v-card-title>
 
             <v-card-text class="text-center">
