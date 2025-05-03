@@ -27,11 +27,10 @@ onMounted(async () => {
         class="background-color"
       >
         <!-- Navbar -->
-        <nav class="navbar bg-body-tertiary fixed-top shadow-sm">
-          <div class="container-fluid">
-            <h1 class="navbar-brand" href="#">Claimpoint</h1>
+        <nav class="navbar bg-body-tertiary fixed-top shadow-sm text-black">
+          <div class="container-fluid d-flex align-items-center justify-start">
             <button
-              class="navbar-toggler"
+              class="navbar-toggler me-2"
               type="button"
               data-bs-toggle="offcanvas"
               data-bs-target="#offcanvasNavbar"
@@ -40,8 +39,10 @@ onMounted(async () => {
             >
               <span class="navbar-toggler-icon"></span>
             </button>
+            <h1 class=" mb-0 ms-2 text-h5 font-weight-black">ClaimPoint</h1>
+          
             <div
-              class="offcanvas offcanvas-end"
+              class="offcanvas offcanvas-start"
               tabindex="-1"
               id="offcanvasNavbar"
               aria-labelledby="offcanvasNavbarLabel"
@@ -75,7 +76,7 @@ onMounted(async () => {
         </nav>
 
         <!-- Main Content -->
-        <div class="container py-5 mt-10">
+        <div class="container py-4 mt-5">
           <div class="col-sm-12 text-center">
             <img id="logo" :src="logo" width="50%" height="5%" alt="Logo" />
           </div>
@@ -94,15 +95,16 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+
 /* Background & Layout */
 .background-color {
-  background: linear-gradient(135deg, #FFCC80, #FFCC80);
+  background: linear-gradient(135deg, #ffcc80, #ffcc80);
   min-height: 100vh;
 }
 
 /* Navbar Styles */
 .navbar {
-  background: #FFA726 !important;
+  background: #ffa726 !important;
   padding: 0.8rem 1.2rem;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
@@ -121,16 +123,16 @@ onMounted(async () => {
 }
 
 .nav-link:hover {
-  color: #E65100;
+  color: #e65100;
 }
 
 /* Offcanvas Styles */
 .offcanvas-body {
-  background: #FFCC80;
+  background: #ffcc80;
 }
 
 .offcanvas-header {
-  background: #FFA726;
+  background: #ffa726;
   border-bottom: 0px solid #ddd;
 }
 
@@ -140,7 +142,7 @@ onMounted(async () => {
 }
 
 .nav-item {
-  background-color: #FFA726;
+  background-color: #ffa726;
   padding: 10px 16px;
   border-radius: 24px;
   margin-bottom: 10px;
@@ -152,7 +154,7 @@ onMounted(async () => {
 }
 
 .nav-item:hover {
-  background-color: #FFE0B2;
+  background-color: #ffe0b2;
   transform: translateY(-2px);
 }
 
@@ -168,8 +170,8 @@ onMounted(async () => {
 }
 
 /* Footer (Bottom Navbar) */
-.fixed-bottom {
-  background-color: #E65100;
+/* .fixed-bottom {
+  background-color: #e65100;
   padding: 10px 0;
 }
 
@@ -180,7 +182,7 @@ onMounted(async () => {
 
 .fixed-bottom .text-light:hover {
   color: #ffcc80 !important;
-}
+} */
 
 /* Typography */
 h1 {
@@ -242,4 +244,5 @@ p.lead {
 .offcanvas-body {
   padding: 20px;
 }
+
 </style>

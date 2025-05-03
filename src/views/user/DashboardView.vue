@@ -47,7 +47,7 @@ onMounted(() => {
           <v-card-text class="text-h4 font-weight-bold">{{ foundItems }}</v-card-text>
           <v-card-subtitle class="text-caption">Items marked as Found</v-card-subtitle>
           <v-card-actions>
-            <v-btn color="white" text>View Details</v-btn>
+            <v-btn color="white" to="/browse" text>View Details</v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
@@ -59,7 +59,7 @@ onMounted(() => {
           <v-card-text class="text-h4 font-weight-bold">{{ lostItems }}</v-card-text>
           <v-card-subtitle class="text-caption">Items reported Lost</v-card-subtitle>
           <v-card-actions>
-            <v-btn color="white" text>View Details</v-btn>
+            <v-btn color="white" to="/browse" text>View Details</v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
@@ -71,7 +71,7 @@ onMounted(() => {
           <v-card-text class="text-h4 font-weight-bold">{{ pendingItems }}</v-card-text>
           <v-card-subtitle class="text-caption">Items awaiting status</v-card-subtitle>
           <v-card-actions>
-            <v-btn color="white" text>View Details</v-btn>
+            <v-btn color="white" to="/browse" text>View Details</v-btn>
           </v-card-actions>
         </v-card>
       </v-col>

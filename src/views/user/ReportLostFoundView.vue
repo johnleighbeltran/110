@@ -4,14 +4,14 @@
       <v-col cols="12" md="10" lg="8">
         <v-card class="pa-6" elevation="4" rounded>
           <v-card-title class="text-center">
-            <h3>Report Lost Item</h3>
+            <h3>Report Item</h3>
           </v-card-title>
 
           <!-- Form for reporting lost item -->
           <v-form @submit.prevent="submitReport">
             <v-file-input
               v-model="file"
-              label="Upload File"
+              label="Upload Photo"
               placeholder="Choose a file"
               outlined
               dense
@@ -133,7 +133,7 @@ export default {
     const user = ref(null);
 
     // Status options for the dropdown
-    const statusOptions = ref(['lost', 'found']);
+    const statusOptions = ref(['Lost', 'Found']);
 
     // Fetch authenticated user data on mount
     onMounted(async () => {
