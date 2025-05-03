@@ -174,7 +174,7 @@ const uploadImage = async (event) => {
           </template>
         </v-btn>
 
-        <v-dialog v-model="showProfileDialog" max-width="500">
+        <v-dialog v-model="showProfileDialog" class="diaglog-background" max-width="500">
           <v-card>
             <v-card-title class="headline text-center">Profile</v-card-title>
 
@@ -325,6 +325,9 @@ body.modal-open {
   border-bottom: 1px solid #ef6c00;
 }
 
+.diaglog-background{
+  background-color: #DF9755;
+}
 /* Add custom styling for the content area */
 .v-main {
   background-color: #ffa726;
