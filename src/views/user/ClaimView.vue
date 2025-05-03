@@ -172,6 +172,8 @@ export default {
 
             <!-- Submit Button -->
             <v-btn type="submit" color="orange-lighten-1" block large>Submit Claim</v-btn>
+            <br>
+            <v-btn to="/browse" color="orange-lighten-1" block large>Go Back</v-btn>
           </v-form>
         </v-card>
       </v-col>
