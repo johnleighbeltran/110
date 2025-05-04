@@ -136,31 +136,37 @@ const deleteReport = async (id) => {
       </v-col>
     </v-row>
 
-    <!-- Window for Tabs -->
+        <!-- Window for Tabs -->
     <v-window v-model="currentTab" class="mt-10">
       <!-- CLAIMS TAB -->
       <v-window-item>
         <v-container fluid>
           <v-card-title>Claims</v-card-title>
           <v-row>
-            <v-col v-for="(item, index) in claimedItems" :key="index" cols="12" sm="6" md="4">
+            <v-col
+              v-for="(item, index) in claimedItems"
+              :key="index"
+              cols="12"
+              sm="6"
+              md="4"
+            >
               <v-card class="pa-4 mb-4 border" elevation="2">
-                <v-card-title>{{ item.name }}</v-card-title>
                 <v-img :src="item.item_img" height="100px" class="mb-2"></v-img>
-                <v-card-text><strong>Location:</strong> {{ item.location }}</v-card-text>
-                <v-card-text><strong>Date:</strong> {{ item.date }}</v-card-text>
-                <v-row class="px-4" justify="space-between">
+                <v-card-title>{{ item.name }}</v-card-title>
+                <v-card-subtitle><strong>Category:</strong> {{ item.category }}</v-card-subtitle>
+                <v-card-subtitle><strong>Location:</strong> {{ item.location }}</v-card-subtitle>
+                <v-card-subtitle><strong>Date:</strong> {{ item.date }}</v-card-subtitle>
+                <v-card-subtitle><strong>Report Type:</strong> {{ item.report_type }}</v-card-subtitle>
+
+                <v-card-text v-if="item.description">
+                  <strong>Description:</strong> {{ item.description }}
+                </v-card-text>
+
+                <v-row class="px-4 mt-2" justify="space-between">
                   <v-col>
                     <v-chip :color="item.status === 'Approved' ? 'green' : 'orange'" dark>
                       {{ item.status }}
                     </v-chip>
-                  </v-col>
-                </v-row>
-                <v-row v-if="item.description" class="mt-2">
-                  <v-col>
-                    <v-card-text>
-                      <strong>Description:</strong> {{ item.description }}
-                    </v-card-text>
                   </v-col>
                 </v-row>
               </v-card>
@@ -174,14 +180,26 @@ const deleteReport = async (id) => {
         <v-container fluid>
           <v-card-title>Reports</v-card-title>
           <v-row>
-            <v-col v-for="(report, index) in reportItems" :key="index" cols="12" sm="6" md="4">
+            <v-col
+              v-for="(report, index) in reportItems"
+              :key="index"
+              cols="12"
+              sm="6"
+              md="4"
+            >
               <v-card class="pa-4 mb-4 border" elevation="2">
-                <v-card-title>{{ report.name }}</v-card-title>
                 <v-img :src="report.item_img" height="100px" class="mb-2"></v-img>
-                <v-card-text><strong>Location:</strong> {{ report.location }}</v-card-text>
-                <v-card-text><strong>Date:</strong> {{ report.date }}</v-card-text>
-                <v-card-text><strong>Report Type:</strong> {{ report.report_type }}</v-card-text>
-                <v-row class="px-4" justify="space-between">
+                <v-card-title>{{ report.name }}</v-card-title>
+                <v-card-subtitle><strong>Category:</strong> {{ report.category }}</v-card-subtitle>
+                <v-card-subtitle><strong>Location:</strong> {{ report.location }}</v-card-subtitle>
+                <v-card-subtitle><strong>Date:</strong> {{ report.date }}</v-card-subtitle>
+                <v-card-subtitle><strong>Report Type:</strong> {{ report.report_type }}</v-card-subtitle>
+
+                <v-card-text v-if="report.description">
+                  <strong>Description:</strong> {{ report.description }}
+                </v-card-text>
+
+                <v-row class="px-4 mt-2" justify="space-between">
                   <v-col>
                     <v-chip :color="report.status === 'Approved' ? 'green' : 'orange'" dark>
                       {{ report.status }}
@@ -198,6 +216,7 @@ const deleteReport = async (id) => {
         </v-container>
       </v-window-item>
     </v-window>
+
 
     <!-- Edit Dialog -->
     <v-dialog v-model="dialog" max-width="600px">
