@@ -1,112 +1,111 @@
 <script setup>
 // Import necessary functions from Vue
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed } from 'vue'
 
 // Import the Supabase client configured in your project
-import { supabase } from '@/supabase';
+import { supabase } from '@/supabase'
 
 // Reactive reference to track the currently selected tab
 // 0 = Claims, 1 = Reports
-const currentTab = ref(0);
+const currentTab = ref(0)
 
 // Reactive array to store all report items fetched from Supabase
-const reportItems = ref([]);
+const reportItems = ref([])
 
 // Reactive object for the report item that is currently being edited
-const editableReport = ref(null);
+const editableReport = ref(null)
 
 // Boolean ref to control the visibility of the edit dialog
-const dialog = ref(false);
+const dialog = ref(false)
 
 // Computed property to filter out claimed items from all report items
 const claimedItems = computed(() => {
-  return reportItems.value.filter(item => item.status === 'claimed');
-});
+  return reportItems.value.filter((item) => item.status === 'claimed')
+})
 
 // Function to fetch all report items from Supabase
 const fetchAllReportItems = async () => {
   try {
     const { data, error } = await supabase
-      .from('reportitems')        // Target the "reportitems" table
-      .select('*');               // Select all columns
+      .from('reportitems') // Target the "reportitems" table
+      .select('*') // Select all columns
 
     if (error) {
-      console.error('Error fetching data:', error);
-      return;
+      console.error('Error fetching data:', error)
+      return
     }
 
     // Store the fetched data into the reactive reportItems array
-    reportItems.value = data;
+    reportItems.value = data
   } catch (error) {
-    console.error('Error fetching report items:', error);
+    console.error('Error fetching report items:', error)
   }
-};
+}
 
 // Fetch the report items when the component is first mounted
 onMounted(() => {
-  fetchAllReportItems();
-});
+  fetchAllReportItems()
+})
 
 // Function to open the edit dialog with the selected report's data
 const editReport = (id) => {
   // Find the report by ID
-  const reportToEdit = reportItems.value.find(report => report.id === id);
+  const reportToEdit = reportItems.value.find((report) => report.id === id)
 
   // Make a shallow copy of the report and store it in editableReport
-  editableReport.value = { ...reportToEdit };
+  editableReport.value = { ...reportToEdit }
 
   // Show the edit dialog
-  dialog.value = true;
-};
+  dialog.value = true
+}
 
 // Function to update the currently edited report in Supabase
 const updateReport = async () => {
   try {
     const { data, error } = await supabase
-      .from('reportitems')                      // Target the table
-      .update(editableReport.value)             // Send updated fields
-      .eq('id', editableReport.value.id);       // Match report by ID
+      .from('reportitems') // Target the table
+      .update(editableReport.value) // Send updated fields
+      .eq('id', editableReport.value.id) // Match report by ID
 
     if (error) {
-      console.error('Error updating report:', error.message);
+      console.error('Error updating report:', error.message)
     } else {
-      console.log('Report updated successfully!', data);
+      console.log('Report updated successfully!', data)
 
       // Close the dialog after successful update
-      dialog.value = false;
+      dialog.value = false
 
       // Refresh the list to reflect changes
-      fetchAllReportItems();
+      fetchAllReportItems()
     }
   } catch (error) {
-    console.error('Error updating report:', error);
+    console.error('Error updating report:', error)
   }
-};
+}
 
 // Function to delete a report item by ID
 const deleteReport = async (id) => {
   try {
     const { error } = await supabase
-      .from('reportitems')    // Target the table
-      .delete()               // Delete operation
-      .eq('id', id);          // Match report by ID
+      .from('reportitems') // Target the table
+      .delete() // Delete operation
+      .eq('id', id) // Match report by ID
 
     if (error) {
-      console.error('Error deleting item:', error.message);
+      console.error('Error deleting item:', error.message)
     } else {
-      console.log('Item deleted successfully!');
+      console.log('Item deleted successfully!')
 
       // Refresh the list to remove the deleted item
-      fetchAllReportItems();
+      fetchAllReportItems()
     }
   } catch (error) {
-    console.error('Error deleting item:', error);
+    console.error('Error deleting item:', error)
   }
-};
+}
 </script>
 
-
-<template> 
+<template>
   <v-container fluid>
     <!-- Header -->
     <v-row align="center" justify="space-between" class="mb-4">
@@ -118,18 +117,20 @@ const deleteReport = async (id) => {
     <!-- Tabs -->
     <v-row>
       <v-col>
-        <v-btn 
-          block 
-          :color="currentTab === 0 ? 'orange-darken-4' : 'orange-lighten-5'" 
-          @click="currentTab = 0">
+        <v-btn
+          block
+          :color="currentTab === 0 ? 'orange-darken-4' : 'orange-lighten-5'"
+          @click="currentTab = 0"
+        >
           Claims
         </v-btn>
       </v-col>
       <v-col>
-        <v-btn 
-          block 
-          :color="currentTab === 1 ? 'orange-darken-4' : 'orange-lighten-5'" 
-          @click="currentTab = 1">
+        <v-btn
+          block
+          :color="currentTab === 1 ? 'orange-darken-4' : 'orange-lighten-5'"
+          @click="currentTab = 1"
+        >
           Reports
         </v-btn>
       </v-col>
@@ -137,19 +138,12 @@ const deleteReport = async (id) => {
 
     <!-- Window for Tabs -->
     <v-window v-model="currentTab" class="mt-10">
-
       <!-- CLAIMS TAB -->
       <v-window-item>
         <v-container fluid>
           <v-card-title>Claims</v-card-title>
           <v-row>
-            <v-col
-              v-for="(item, index) in claimedItems"
-              :key="index"
-              cols="12"
-              sm="6"
-              md="4"
-            >
+            <v-col v-for="(item, index) in claimedItems" :key="index" cols="12" sm="6" md="4">
               <v-card class="pa-4 mb-4 border" elevation="2">
                 <v-card-title>{{ item.name }}</v-card-title>
                 <v-img :src="item.item_img" height="100px" class="mb-2"></v-img>
@@ -180,13 +174,7 @@ const deleteReport = async (id) => {
         <v-container fluid>
           <v-card-title>Reports</v-card-title>
           <v-row>
-            <v-col
-              v-for="(report, index) in reportItems"
-              :key="index"
-              cols="12"
-              sm="6"
-              md="4"
-            >
+            <v-col v-for="(report, index) in reportItems" :key="index" cols="12" sm="6" md="4">
               <v-card class="pa-4 mb-4 border" elevation="2">
                 <v-card-title>{{ report.name }}</v-card-title>
                 <v-img :src="report.item_img" height="100px" class="mb-2"></v-img>
@@ -231,8 +219,6 @@ const deleteReport = async (id) => {
     </v-dialog>
   </v-container>
 </template>
-
-
 
 <style scoped>
 .border {
