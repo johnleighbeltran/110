@@ -1,98 +1,122 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue'; // For managing state and lifecycle hooks
-import { supabase } from '@/supabase'; // Import your Supabase client
+// Import necessary functions from Vue
+import { ref, onMounted, computed } from 'vue';
 
-const currentTab = ref(0); // Default to "Claims" (index 0)
-const reportItems = ref([]); // State to hold all report items fetched from Supabase
-const editableReport = ref(null); // State to hold the report being edited
-const dialog = ref(false); // Control visibility of the edit dialog
+// Import the Supabase client configured in your project
+import { supabase } from '@/supabase';
 
+// Reactive reference to track the currently selected tab
+// 0 = Claims, 1 = Reports
+const currentTab = ref(0);
+
+// Reactive array to store all report items fetched from Supabase
+const reportItems = ref([]);
+
+// Reactive object for the report item that is currently being edited
+const editableReport = ref(null);
+
+// Boolean ref to control the visibility of the edit dialog
+const dialog = ref(false);
+
+// Computed property to filter out claimed items from all report items
 const claimedItems = computed(() => {
   return reportItems.value.filter(item => item.status === 'claimed');
 });
 
-// Fetch all report items from Supabase
+// Function to fetch all report items from Supabase
 const fetchAllReportItems = async () => {
   try {
     const { data, error } = await supabase
-      .from('reportitems')
-      .select('*');  // '*' selects all columns
+      .from('reportitems')        // Target the "reportitems" table
+      .select('*');               // Select all columns
 
     if (error) {
       console.error('Error fetching data:', error);
       return;
     }
 
-    reportItems.value = data; // Store the fetched data in the reportItems variable
+    // Store the fetched data into the reactive reportItems array
+    reportItems.value = data;
   } catch (error) {
     console.error('Error fetching report items:', error);
   }
 };
 
-// Fetch data when the component is mounted
+// Fetch the report items when the component is first mounted
 onMounted(() => {
   fetchAllReportItems();
 });
 
-// Methods to handle Edit and Delete actions
+// Function to open the edit dialog with the selected report's data
 const editReport = (id) => {
+  // Find the report by ID
   const reportToEdit = reportItems.value.find(report => report.id === id);
-  editableReport.value = { ...reportToEdit }; // Copy the report to editableReport
-  dialog.value = true; // Open the dialog for editing
+
+  // Make a shallow copy of the report and store it in editableReport
+  editableReport.value = { ...reportToEdit };
+
+  // Show the edit dialog
+  dialog.value = true;
 };
 
+// Function to update the currently edited report in Supabase
 const updateReport = async () => {
   try {
-    // Update the report in Supabase
     const { data, error } = await supabase
-      .from('reportitems')
-      .update(editableReport.value)  // Send the updated report data
-      .eq('id', editableReport.value.id); // Update based on report ID
+      .from('reportitems')                      // Target the table
+      .update(editableReport.value)             // Send updated fields
+      .eq('id', editableReport.value.id);       // Match report by ID
 
     if (error) {
       console.error('Error updating report:', error.message);
     } else {
       console.log('Report updated successfully!', data);
-      dialog.value = false; // Close the dialog after update
-      fetchAllReportItems(); // Refresh the list after update
+
+      // Close the dialog after successful update
+      dialog.value = false;
+
+      // Refresh the list to reflect changes
+      fetchAllReportItems();
     }
   } catch (error) {
     console.error('Error updating report:', error);
   }
 };
 
+// Function to delete a report item by ID
 const deleteReport = async (id) => {
   try {
     const { error } = await supabase
-      .from('reportitems')
-      .delete()
-      .eq('id', id); // Delete the report item based on its ID
+      .from('reportitems')    // Target the table
+      .delete()               // Delete operation
+      .eq('id', id);          // Match report by ID
 
     if (error) {
       console.error('Error deleting item:', error.message);
     } else {
       console.log('Item deleted successfully!');
-      fetchAllReportItems(); // Refresh the list after deletion
+
+      // Refresh the list to remove the deleted item
+      fetchAllReportItems();
     }
   } catch (error) {
     console.error('Error deleting item:', error);
   }
 };
-
 </script>
 
-<template>
+
+<template> 
   <v-container fluid>
-    <!-- Header with logo -->
+    <!-- Header -->
     <v-row align="center" justify="space-between" class="mb-4">
       <v-col class="text-left">
         <v-img :src="logo" height="40px" />
       </v-col>
     </v-row>
 
-    <!-- Tab Navigation Section: Custom Clickable Tabs -->
+    <!-- Tabs -->
     <v-row>
-      <!-- Claims Tab -->
       <v-col>
         <v-btn 
           block 
@@ -101,8 +125,6 @@ const deleteReport = async (id) => {
           Claims
         </v-btn>
       </v-col>
-
-      <!-- Reports Tab -->
       <v-col>
         <v-btn 
           block 
@@ -113,92 +135,92 @@ const deleteReport = async (id) => {
       </v-col>
     </v-row>
 
-    <!-- Content Section based on currentTab value -->
+    <!-- Window for Tabs -->
     <v-window v-model="currentTab" class="mt-10">
-      <!-- Claims Content Section -->
-      <v-window-item>
-        <v-card class="bg-orange-lighten-5">
-          <v-card-title>Claims</v-card-title>
-          <v-card-text v-for="(item, index) in claimedItems" :key="index">
-            <v-card-title>{{ item.name }}</v-card-title>
-            <v-img
-              :src="item.item_img" 
-              height="100px"
-            ></v-img>
-            <v-card-text>{{ item.location }}</v-card-text>
-            <v-card-text>{{ item.date }}</v-card-text>
-            <v-row class="px-4" justify="space-between">
-              <v-col>
-                <v-chip :color="item.status === 'Approved' ? 'green' : 'orange'" dark>{{ item.status }}</v-chip>
-              </v-col>
-            </v-row>
-            <!-- Feedback (only show if there is feedback) -->
-            <v-row v-if="item.description" class="mt-2">
-              <v-col>
-                <v-card-text><strong>Description:</strong> {{ item.description }}</v-card-text>
-              </v-col>
-            </v-row>
-          </v-card-text>
-        </v-card>
-      </v-window-item>
 
-      <!-- Reports Content Section -->
+      <!-- CLAIMS TAB -->
       <v-window-item>
-        <v-card class="bg-orange-lighten-5">
-          <v-card-title>Reports</v-card-title>
-          <v-card-text>
-            <v-row v-for="(report, index) in reportItems" :key="index">
-              <v-col>
-                <v-card-title>{{ report.name }}</v-card-title>
-                <v-img
-                  :src="report.item_img"
-                  height="100px"
-                ></v-img>
-                <v-card-text>{{ report.location }}</v-card-text>
-                <v-card-text>{{ report.date }}</v-card-text>
-                <v-card-text>{{ report.report_type }}</v-card-text>
+        <v-container fluid>
+          <v-card-title>Claims</v-card-title>
+          <v-row>
+            <v-col
+              v-for="(item, index) in claimedItems"
+              :key="index"
+              cols="12"
+              sm="6"
+              md="4"
+            >
+              <v-card class="pa-4 mb-4 border" elevation="2">
+                <v-card-title>{{ item.name }}</v-card-title>
+                <v-img :src="item.item_img" height="100px" class="mb-2"></v-img>
+                <v-card-text><strong>Location:</strong> {{ item.location }}</v-card-text>
+                <v-card-text><strong>Date:</strong> {{ item.date }}</v-card-text>
                 <v-row class="px-4" justify="space-between">
                   <v-col>
-                    <v-chip :color="report.status === 'Approved' ? 'green' : 'orange'" dark>{{ report.status }}</v-chip>
+                    <v-chip :color="item.status === 'Approved' ? 'green' : 'orange'" dark>
+                      {{ item.status }}
+                    </v-chip>
                   </v-col>
-                  <!-- Edit and Delete buttons -->
+                </v-row>
+                <v-row v-if="item.description" class="mt-2">
+                  <v-col>
+                    <v-card-text>
+                      <strong>Description:</strong> {{ item.description }}
+                    </v-card-text>
+                  </v-col>
+                </v-row>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-window-item>
+
+      <!-- REPORTS TAB -->
+      <v-window-item>
+        <v-container fluid>
+          <v-card-title>Reports</v-card-title>
+          <v-row>
+            <v-col
+              v-for="(report, index) in reportItems"
+              :key="index"
+              cols="12"
+              sm="6"
+              md="4"
+            >
+              <v-card class="pa-4 mb-4 border" elevation="2">
+                <v-card-title>{{ report.name }}</v-card-title>
+                <v-img :src="report.item_img" height="100px" class="mb-2"></v-img>
+                <v-card-text><strong>Location:</strong> {{ report.location }}</v-card-text>
+                <v-card-text><strong>Date:</strong> {{ report.date }}</v-card-text>
+                <v-card-text><strong>Report Type:</strong> {{ report.report_type }}</v-card-text>
+                <v-row class="px-4" justify="space-between">
+                  <v-col>
+                    <v-chip :color="report.status === 'Approved' ? 'green' : 'orange'" dark>
+                      {{ report.status }}
+                    </v-chip>
+                  </v-col>
                   <v-col class="text-right">
                     <v-btn small @click="editReport(report.id)">Edit</v-btn>
                     <v-btn small @click="deleteReport(report.id)">Delete</v-btn>
                   </v-col>
                 </v-row>
-              </v-col>
-            </v-row>
-          </v-card-text>
-        </v-card>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-container>
       </v-window-item>
     </v-window>
 
-    <!-- Edit Report Dialog -->
+    <!-- Edit Dialog -->
     <v-dialog v-model="dialog" max-width="600px">
       <v-card>
         <v-card-title>Edit Report</v-card-title>
         <v-card-text>
           <v-form>
-            <v-text-field 
-              v-model="editableReport.name"
-              label="Name"
-              required
-            ></v-text-field>
-            <v-text-field 
-              v-model="editableReport.location"
-              label="Location"
-              required
-            ></v-text-field>
-            <v-text-field 
-              v-model="editableReport.date"
-              label="Date"
-              required
-            ></v-text-field>
-            <v-textarea 
-              v-model="editableReport.description"
-              label="Description"
-            ></v-textarea>
+            <v-text-field v-model="editableReport.name" label="Name" required />
+            <v-text-field v-model="editableReport.location" label="Location" required />
+            <v-text-field v-model="editableReport.date" label="Date" required />
+            <v-textarea v-model="editableReport.description" label="Description" />
           </v-form>
         </v-card-text>
         <v-card-actions>
@@ -210,9 +232,13 @@ const deleteReport = async (id) => {
   </v-container>
 </template>
 
+
+
 <style scoped>
-.v-card {
-  margin-bottom: 20px;
+.border {
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 .v-chip {
   font-size: 14px;
