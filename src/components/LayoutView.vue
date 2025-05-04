@@ -143,7 +143,7 @@ const uploadImage = async (event) => {
 
           <v-list-item to="/browse" router-link>
             <v-list-item-content>
-              <v-list-item-title>Browse Found Item</v-list-item-title>
+              <v-list-item-title>Browse Item</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
 
