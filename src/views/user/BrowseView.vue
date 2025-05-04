@@ -1,38 +1,37 @@
-<script setup>
+<script setup> 
+// Import necessary Vue Composition API functions and utilities
 import { ref, computed, onMounted } from 'vue'
-import { supabase } from '@/supabase' // Assuming you have Supabase client set up
+import { supabase } from '@/supabase' // Supabase client instance
+import { useRouter } from 'vue-router' // For programmatic navigation
 
-import { useRouter } from 'vue-router' // Import useRouter to navigate
+// Initialize router for navigation
+const router = useRouter()
 
-const router = useRouter() // Initialize router
+// Search and filter state variables
+const searchQuery = ref('')               // Search bar input
+const selectedCategory = ref(null)        // Selected category filter
+const selectedDate = ref('')              // Selected date filter
+const selectedLocation = ref(null)        // Selected location filter
+const selectedReportType = ref(null)      // Selected report type (Lost/Found)
+const dateMenu = ref(false)               // Boolean to control the date picker menu
 
-// Data for search, categories, and locations
-const searchQuery = ref('')
-const selectedCategory = ref(null)
-const selectedDate = ref('')
-const selectedLocation = ref(null)
-const dateMenu = ref(false)
+// Main data collections
+const reportItems = ref([])               // All report items fetched from Supabase
+const categories = ref([])                // Unique categories extracted from items
+const locations = ref([])                 // Unique locations extracted from items
 
-// State for fetched report items
-const reportItems = ref([])
-const categories = ref([])
-const locations = ref([])
-
-// Fetch all report items from Supabase
+// Fetch all report items from Supabase and extract unique categories and locations
 const fetchAllReportItems = async () => {
   try {
-    const { data, error } = await supabase
-      .from('reportitems') // Replace with your actual table name
-      .select('*')
-
+    const { data, error } = await supabase.from('reportitems').select('*')
     if (error) {
       console.error('Error fetching data:', error)
       return
     }
 
-    reportItems.value = data // Store the fetched data in the reportItems variable
+    reportItems.value = data
 
-    // Extract unique categories and locations from fetched data
+    // Extract unique categories and locations for filter dropdowns
     categories.value = [...new Set(data.map((item) => item.category))]
     locations.value = [...new Set(data.map((item) => item.location))]
   } catch (error) {
@@ -40,43 +39,47 @@ const fetchAllReportItems = async () => {
   }
 }
 
-// Fetch data when the component is mounted
+// Call fetch on mount to load initial data
 onMounted(() => {
   fetchAllReportItems()
 })
 
-// Computed property for filtered items
+// Computed property that filters the report items based on all user inputs
 const filteredItems = computed(() => {
   return reportItems.value.filter((item) => {
+    // Match text in name, description, location, or date
     const matchesSearchQuery =
       item.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
       item.description.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
       item.location.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
       item.date.includes(searchQuery.value)
 
+    // Match dropdown filters
     const matchesCategory = !selectedCategory.value || item.category === selectedCategory.value
     const matchesLocation = !selectedLocation.value || item.location === selectedLocation.value
     const matchesDate = !selectedDate.value || item.date === selectedDate.value
+    const matchesReportType = !selectedReportType.value || item.report_type === selectedReportType.value
 
-    return matchesSearchQuery && matchesCategory && matchesLocation && matchesDate
+    // Return true only if all filters match
+    return matchesSearchQuery && matchesCategory && matchesLocation && matchesDate && matchesReportType
   })
 })
 
-// Claim item function that navigates to the claims page with itemId
+// Handles claiming an item by navigating to the claims page
 const claimItem = (item) => {
-  // Navigate to the claims page with item id as a route parameter
   if (item.status === 'claimed') {
     alert('This item has already been claimed.')
     return
   }
-  console.log('Claiming item:', item.id)
+
+  // Navigate to claims view with item ID in route params
   router.push({ name: 'claims', params: { itemId: item.id } })
 }
 </script>
 
 <template>
   <v-container fluid>
-    <!-- Search Bar Section -->
+    <!-- Search Bar -->
     <v-row justify="center" class="mb-5">
       <v-col cols="12" sm="8" md="6">
         <v-text-field
@@ -85,21 +88,26 @@ const claimItem = (item) => {
           prepend-icon="mdi-magnify"
           clearable
           outlined
-        ></v-text-field>
+          @click:clear="searchQuery = ''"
+        />
       </v-col>
     </v-row>
 
-    <!-- Filters Section -->
-    <v-row justify="center" class="mb-5">
-      <v-col cols="12" sm="4" md="3">
+    <!-- Filters -->
+    <v-row justify="center" class="mb-5" align="stretch" no-gutters>
+      <!-- Category Filter -->
+      <v-col cols="12" sm="6" md="3" class="pa-3">
         <v-select
           v-model="selectedCategory"
           :items="categories"
           label="Category"
           outlined
-        ></v-select>
+          clearable
+        />
       </v-col>
-      <v-col cols="12" sm="4" md="3">
+
+      <!-- Date Filter -->
+      <v-col cols="12" sm="6" md="3" class="pa-3">
         <v-menu
           v-model="dateMenu"
           :close-on-content-click="false"
@@ -115,39 +123,54 @@ const claimItem = (item) => {
               v-bind="attrs"
               v-on="on"
               outlined
-            ></v-text-field>
+            />
           </template>
-          <v-date-picker v-model="selectedDate" @input="dateMenu = false"></v-date-picker>
+          <v-date-picker v-model="selectedDate" @input="dateMenu = false" />
         </v-menu>
       </v-col>
-      <v-col cols="12" sm="4" md="3">
+
+      <!-- Location Filter -->
+      <v-col cols="12" sm="6" md="3" class="pa-3">
         <v-select
           v-model="selectedLocation"
           :items="locations"
           label="Location"
           outlined
-        ></v-select>
+          clearable
+        />
+      </v-col>
+
+      <!-- Report Type Filter (Lost/Found) -->
+      <v-col cols="12" sm="6" md="3" class="pa-3">
+        <v-select
+          v-model="selectedReportType"
+          :items="['Lost', 'Found']"
+          label="Report Type"
+          outlined
+          clearable
+        />
       </v-col>
     </v-row>
 
-    <!-- Cards Section -->
+    <!-- Item Cards Section -->
     <v-row justify="center" v-if="filteredItems.length">
       <v-col v-for="(item, index) in filteredItems" :key="index" cols="12" sm="8" md="4" lg="5">
         <v-card>
-          <v-img :src="item.item_img" height="200px"></v-img>
+          <v-img :src="item.item_img" height="200px" />
           <v-card-title>{{ item.name }}</v-card-title>
-          <v-card-subtitle>Category: {{ item.category }}</v-card-subtitle>
-          <v-card-subtitle>Location: {{ item.location }}</v-card-subtitle>
-          <v-card-subtitle>Date: {{ item.date }}</v-card-subtitle>
-          <v-card-text> Description: {{ item.description }} </v-card-text>
+          <v-card-subtitle><strong>Category:</strong> {{ item.category }}</v-card-subtitle>
+          <v-card-subtitle><strong>Location:</strong> {{ item.location }}</v-card-subtitle>
+          <v-card-subtitle><strong>Date:</strong> {{ item.date }}</v-card-subtitle>
+          <v-card-subtitle><strong>Report Type:</strong> {{ item.report_type }}</v-card-subtitle>
+          <v-card-text><strong>Description:</strong> {{ item.description }}</v-card-text>
 
-          <!-- Found Location -->
+          <!-- Action Row for Item (Location Label and Claim Button) -->
           <v-row class="px-4" justify="space-between">
             <v-col>
               <v-chip color="info" dark>Location: {{ item.location }}</v-chip>
             </v-col>
-            <!-- Claim Button -->
             <v-col class="text-center">
+              <!-- Claim Button with conditional styling and action -->
               <v-btn
                 :color="item.status === 'claimed' ? 'black' : 'orange-darken-1'"
                 :disabled="item.status === 'claimed'"
@@ -161,7 +184,7 @@ const claimItem = (item) => {
       </v-col>
     </v-row>
 
-    <!-- No results message -->
+    <!-- No Results -->
     <v-row justify="center" v-if="!filteredItems.length">
       <v-col cols="12" class="text-center">
         <v-alert type="error" color="red">No items found matching your criteria.</v-alert>
@@ -171,28 +194,35 @@ const claimItem = (item) => {
 </template>
 
 <style scoped>
-/* Container padding */
 .v-container {
   padding-top: 40px;
   background: linear-gradient(135deg, #fff3e0 0%, #e2d1c3 100%);
   min-height: 100vh;
 }
 
-/* Spacing for search/filter rows */
 .v-row {
   margin-bottom: 1.5rem;
 }
 
-/* Text Fields and Selects */
-.v-text-field,
-.v-select {
+/* Input & Select Font */
+.v-text-field input,
+.v-select input {
   font-size: 16px;
-  margin-bottom: 12px;
+  padding: 12px;
 }
 
-/* Search Field */
-.v-text-field input {
+.v-input__control {
   font-size: 16px;
+}
+
+.v-col.pa-3 {
+  padding: 12px !important;
+}
+
+.v-label {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
 }
 
 /* Cards */
@@ -200,13 +230,11 @@ const claimItem = (item) => {
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
   background: #fff3e0;
   margin-bottom: 30px;
   padding: 16px;
-  min-height: 450px; /* Bigger card body */
+  min-height: 450px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .v-card:hover {
@@ -214,7 +242,6 @@ const claimItem = (item) => {
   box-shadow: 0px 14px 28px rgba(0, 0, 0, 0.15);
 }
 
-/* Card Title and Subtitles */
 .v-card-title {
   font-size: 24px;
   font-weight: bold;
@@ -228,16 +255,14 @@ const claimItem = (item) => {
   margin-bottom: 6px;
 }
 
-/* Card Text */
 .v-card-text {
   font-size: 15px;
   color: #060606;
   margin-top: 6px;
 }
 
-/* Image inside Card */
 .v-img {
-  height: 260px; /* Bigger Image */
+  height: 260px;
   object-fit: cover;
   border-bottom: 1px solid #eee;
   background-color: #ffe0b2;
@@ -245,7 +270,6 @@ const claimItem = (item) => {
   border-radius: 14px;
 }
 
-/* Chips */
 .v-chip {
   font-size: 14px;
   font-weight: 600;
@@ -253,7 +277,6 @@ const claimItem = (item) => {
   border-radius: 12px;
 }
 
-/* Buttons */
 .v-btn {
   font-size: 15px;
   font-weight: bold;
@@ -262,7 +285,6 @@ const claimItem = (item) => {
   padding: 10px 18px;
 }
 
-/* Claim Button */
 .v-btn.primary {
   background-color: #6a1b9a;
   color: #ffffff;
@@ -272,14 +294,13 @@ const claimItem = (item) => {
   background-color: #4a148c;
 }
 
-/* Alert Message */
 .v-alert {
   border-radius: 16px;
   font-size: 16px;
   margin-top: 2rem;
 }
 
-/* Responsive Fix */
+/* Responsive Enhancements */
 @media (max-width: 600px) {
   .v-col {
     padding: 8px !important;
