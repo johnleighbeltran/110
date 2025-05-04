@@ -1,85 +1,122 @@
-<script setup> 
+<script setup>
 // Import necessary Vue Composition API functions and utilities
-import { ref, computed, onMounted } from 'vue'
-import { supabase } from '@/supabase' // Supabase client instance
-import { useRouter } from 'vue-router' // For programmatic navigation
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { supabase } from '@/supabase' // Import Supabase client instance
+import { useRouter, useRoute } from 'vue-router' // For handling navigation and route
 
-// Initialize router for navigation
+// Initialize router and route for programmatic navigation and route handling
 const router = useRouter()
+const route = useRoute()
 
-// Search and filter state variables
-const searchQuery = ref('')               // Search bar input
-const selectedCategory = ref(null)        // Selected category filter
-const selectedDate = ref('')              // Selected date filter
-const selectedLocation = ref(null)        // Selected location filter
-const selectedReportType = ref(null)      // Selected report type (Lost/Found)
-const dateMenu = ref(false)               // Boolean to control the date picker menu
+// Define computed property to extract the 'filter' query parameter from the URL
+const filter = computed(() => route.query.filter)
 
-// Main data collections
-const reportItems = ref([])               // All report items fetched from Supabase
-const categories = ref([])                // Unique categories extracted from items
-const locations = ref([])                 // Unique locations extracted from items
+// Declare reactive variables for search and filter criteria
+const searchQuery = ref('') // Stores the search query input
+const selectedCategory = ref(null) // Stores selected category for filtering
+const selectedDate = ref('') // Stores selected date for filtering
+const selectedLocation = ref(null) // Stores selected location for filtering
+const selectedReportType = ref(null) // Stores selected report type for filtering (Lost/Found)
+const dateMenu = ref(false) // Controls the date picker visibility
 
-// Fetch all report items from Supabase and extract unique categories and locations
-const fetchAllReportItems = async () => {
-  try {
-    const { data, error } = await supabase.from('reportitems').select('*')
-    if (error) {
-      console.error('Error fetching data:', error)
-      return
-    }
+// Declare reactive variables for report items and filter options
+const reportItems = ref([]) // Array of report items fetched from Supabase
+const categories = ref([]) // Array to store unique categories from fetched data
+const locations = ref([]) // Array to store unique locations from fetched data
 
-    reportItems.value = data
+// Function to fetch filtered items based on the query parameter 'filter' from URL
+const fetchFilteredItems = async () => {
+  let query = supabase.from('reportitems').select('*') // Initialize query to fetch all report items
 
-    // Extract unique categories and locations for filter dropdowns
-    categories.value = [...new Set(data.map((item) => item.category))]
-    locations.value = [...new Set(data.map((item) => item.location))]
-  } catch (error) {
-    console.error('Error fetching report items:', error)
+  // Apply filters based on the 'filter' query parameter
+  if (filter.value === 'Found' || filter.value === 'Lost') {
+    query = query.eq('report_type', filter.value) // Filter by 'report_type'
+  } else if (filter.value === 'Pending') {
+    query = query.eq('status', 'pending') // Filter by 'status' if it's 'Pending'
   }
+
+  // Execute the query and handle response
+  const { data, error } = await query
+
+  if (error) {
+    console.error('Error fetching filtered items:', error) // Log error if query fails
+    return
+  }
+
+  // Set the fetched data to the reportItems and update categories and locations
+  reportItems.value = data
+  categories.value = [...new Set(data.map(item => item.category))] // Get unique categories
+  locations.value = [...new Set(data.map(item => item.location))] // Get unique locations
 }
 
-// Call fetch on mount to load initial data
-onMounted(() => {
-  fetchAllReportItems()
+// Realtime subscription to listen for changes in the 'reportitems' table
+let subscription
+
+onMounted(async () => {
+  // Fetch initial data when the component is mounted
+  await fetchFilteredItems()
+
+  // Subscribe to changes in the reportitems table for real-time updates
+  subscription = supabase
+    .channel('reportitems-changes')
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: 'reportitems'
+      },
+      async () => {
+        console.log('Change detected in reportitems — refetching...')
+        await fetchFilteredItems() // Refetch data when changes are detected
+      }
+    )
+    .subscribe()
 })
 
-// Computed property that filters the report items based on all user inputs
+onUnmounted(() => {
+  // Cleanup the subscription when the component is unmounted
+  if (subscription) {
+    supabase.removeChannel(subscription)
+  }
+})
+
+// Computed property to filter the fetched report items based on the selected filters and search query
 const filteredItems = computed(() => {
   return reportItems.value.filter((item) => {
-    // Match text in name, description, location, or date
+    // Check if the item matches the search query
     const matchesSearchQuery =
       item.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
       item.description.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
       item.location.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
       item.date.includes(searchQuery.value)
 
-    // Match dropdown filters
+    // Check if the item matches selected category, location, date, and report type
     const matchesCategory = !selectedCategory.value || item.category === selectedCategory.value
     const matchesLocation = !selectedLocation.value || item.location === selectedLocation.value
     const matchesDate = !selectedDate.value || item.date === selectedDate.value
     const matchesReportType = !selectedReportType.value || item.report_type === selectedReportType.value
 
-    // Return true only if all filters match
+    // Return the item if it matches all the selected filters and search query
     return matchesSearchQuery && matchesCategory && matchesLocation && matchesDate && matchesReportType
   })
 })
 
-// Handles claiming an item by navigating to the claims page
+// Action to claim an item, which redirects to the claim page if available
 const claimItem = (item) => {
   if (item.status === 'claimed') {
-    alert('This item has already been claimed.')
+    alert('This item has already been claimed.') // Alert if the item is already claimed
     return
   }
 
-  // Navigate to claims view with item ID in route params
+  // Navigate to the claim page with the item's id
   router.push({ name: 'claims', params: { itemId: item.id } })
 }
 </script>
 
 <template>
   <v-container fluid>
-    <!-- Search Bar -->
+    <!-- Search Bar Section -->
     <v-row justify="center" class="mb-5">
       <v-col cols="12" sm="8" md="6">
         <v-text-field
@@ -93,7 +130,7 @@ const claimItem = (item) => {
       </v-col>
     </v-row>
 
-    <!-- Filters -->
+    <!-- Filters Section -->
     <v-row justify="center" class="mb-5" align="stretch" no-gutters>
       <!-- Category Filter -->
       <v-col cols="12" sm="6" md="3" class="pa-3">
@@ -164,13 +201,12 @@ const claimItem = (item) => {
           <v-card-subtitle><strong>Report Type:</strong> {{ item.report_type }}</v-card-subtitle>
           <v-card-text><strong>Description:</strong> {{ item.description }}</v-card-text>
 
-          <!-- Action Row for Item (Location Label and Claim Button) -->
+          <!-- Claim Button Section -->
           <v-row class="px-4" justify="space-between">
             <v-col>
               <v-chip color="info" dark>Location: {{ item.location }}</v-chip>
             </v-col>
             <v-col class="text-center">
-              <!-- Claim Button with conditional styling and action -->
               <v-btn
                 :color="item.status === 'claimed' ? 'black' : 'orange-darken-1'"
                 :disabled="item.status === 'claimed'"
@@ -184,7 +220,7 @@ const claimItem = (item) => {
       </v-col>
     </v-row>
 
-    <!-- No Results -->
+    <!-- No Results Section -->
     <v-row justify="center" v-if="!filteredItems.length">
       <v-col cols="12" class="text-center">
         <v-alert type="error" color="red">No items found matching your criteria.</v-alert>
@@ -194,6 +230,7 @@ const claimItem = (item) => {
 </template>
 
 <style scoped>
+/* General Styling for the container */
 .v-container {
   padding-top: 40px;
   background: linear-gradient(135deg, #fff3e0 0%, #e2d1c3 100%);
@@ -204,7 +241,7 @@ const claimItem = (item) => {
   margin-bottom: 1.5rem;
 }
 
-/* Input & Select Font */
+/* Styling for text fields and selects */
 .v-text-field input,
 .v-select input {
   font-size: 16px;
@@ -225,7 +262,7 @@ const claimItem = (item) => {
   color: #333;
 }
 
-/* Cards */
+/* Styling for cards */
 .v-card {
   border-radius: 20px;
   overflow: hidden;
@@ -242,6 +279,7 @@ const claimItem = (item) => {
   box-shadow: 0px 14px 28px rgba(0, 0, 0, 0.15);
 }
 
+/* Styling for card title, subtitles, and text */
 .v-card-title {
   font-size: 24px;
   font-weight: bold;
@@ -261,6 +299,7 @@ const claimItem = (item) => {
   margin-top: 6px;
 }
 
+/* Styling for images */
 .v-img {
   height: 260px;
   object-fit: cover;
@@ -270,6 +309,7 @@ const claimItem = (item) => {
   border-radius: 14px;
 }
 
+/* Styling for chips */
 .v-chip {
   font-size: 14px;
   font-weight: 600;
@@ -277,6 +317,7 @@ const claimItem = (item) => {
   border-radius: 12px;
 }
 
+/* Styling for buttons */
 .v-btn {
   font-size: 15px;
   font-weight: bold;
@@ -285,33 +326,10 @@ const claimItem = (item) => {
   padding: 10px 18px;
 }
 
-.v-btn.primary {
-  background-color: #6a1b9a;
-  color: #ffffff;
-}
-
-.v-btn.primary:hover {
-  background-color: #4a148c;
-}
-
+/* Styling for the alert box */
 .v-alert {
   border-radius: 16px;
   font-size: 16px;
   margin-top: 2rem;
-}
-
-/* Responsive Enhancements */
-@media (max-width: 600px) {
-  .v-col {
-    padding: 8px !important;
-  }
-
-  .v-card {
-    min-height: 400px;
-  }
-
-  .v-img {
-    height: 200px;
-  }
 }
 </style>
