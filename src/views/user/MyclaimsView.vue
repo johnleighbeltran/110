@@ -136,27 +136,23 @@ const deleteReport = async (id) => {
       </v-col>
     </v-row>
 
-        <!-- Window for Tabs -->
+    <!-- Window for Tabs -->
     <v-window v-model="currentTab" class="mt-10">
       <!-- CLAIMS TAB -->
       <v-window-item>
         <v-container fluid>
           <v-card-title>Claims</v-card-title>
           <v-row>
-            <v-col
-              v-for="(item, index) in claimedItems"
-              :key="index"
-              cols="12"
-              sm="6"
-              md="4"
-            >
+            <v-col v-for="(item, index) in claimedItems" :key="index" cols="12" sm="6" md="4">
               <v-card class="pa-4 mb-4 border" elevation="2">
                 <v-img :src="item.item_img" height="100px" class="mb-2"></v-img>
                 <v-card-title>{{ item.name }}</v-card-title>
                 <v-card-subtitle><strong>Category:</strong> {{ item.category }}</v-card-subtitle>
                 <v-card-subtitle><strong>Location:</strong> {{ item.location }}</v-card-subtitle>
                 <v-card-subtitle><strong>Date:</strong> {{ item.date }}</v-card-subtitle>
-                <v-card-subtitle><strong>Report Type:</strong> {{ item.report_type }}</v-card-subtitle>
+                <v-card-subtitle
+                  ><strong>Report Type:</strong> {{ item.report_type }}</v-card-subtitle
+                >
 
                 <v-card-text v-if="item.description">
                   <strong>Description:</strong> {{ item.description }}
@@ -180,20 +176,16 @@ const deleteReport = async (id) => {
         <v-container fluid>
           <v-card-title>Reports</v-card-title>
           <v-row>
-            <v-col
-              v-for="(report, index) in reportItems"
-              :key="index"
-              cols="12"
-              sm="6"
-              md="4"
-            >
+            <v-col v-for="(report, index) in reportItems" :key="index" cols="12" sm="6" md="4">
               <v-card class="pa-4 mb-4 border" elevation="2">
                 <v-img :src="report.item_img" height="100px" class="mb-2"></v-img>
                 <v-card-title>{{ report.name }}</v-card-title>
                 <v-card-subtitle><strong>Category:</strong> {{ report.category }}</v-card-subtitle>
                 <v-card-subtitle><strong>Location:</strong> {{ report.location }}</v-card-subtitle>
                 <v-card-subtitle><strong>Date:</strong> {{ report.date }}</v-card-subtitle>
-                <v-card-subtitle><strong>Report Type:</strong> {{ report.report_type }}</v-card-subtitle>
+                <v-card-subtitle
+                  ><strong>Report Type:</strong> {{ report.report_type }}</v-card-subtitle
+                >
 
                 <v-card-text v-if="report.description">
                   <strong>Description:</strong> {{ report.description }}
@@ -217,7 +209,6 @@ const deleteReport = async (id) => {
       </v-window-item>
     </v-window>
 
-
     <!-- Edit Dialog -->
     <v-dialog v-model="dialog" max-width="600px">
       <v-card>
@@ -227,6 +218,14 @@ const deleteReport = async (id) => {
             <v-text-field v-model="editableReport.name" label="Name" required />
             <v-text-field v-model="editableReport.location" label="Location" required />
             <v-text-field v-model="editableReport.date" label="Date" required />
+
+            <v-select
+              v-model="editableReport.report_type"
+              :items="['Lost', 'Found']"
+              label="Report Type"
+              required
+            />
+
             <v-textarea v-model="editableReport.description" label="Description" />
           </v-form>
         </v-card-text>
