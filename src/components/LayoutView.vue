@@ -175,7 +175,7 @@ const uploadImage = async (event) => {
         </v-btn>
 
         <v-dialog v-model="showProfileDialog" max-width="500">
-          <v-card>
+          <v-card class="diaglog-background">
             <v-card-title class="headline text-center">Profile</v-card-title>
 
             <v-card-text class="text-center">
@@ -301,12 +301,33 @@ const uploadImage = async (event) => {
   </v-app>
 </template>
 
+<!-- GLOBAL STYLES -->
+<style>
+html, body {
+  overflow-x: hidden !important;
+  padding-right: 0 !important;
+  margin-right: 0 !important;
+}
+
+body.offcanvas-backdrop,
+body.modal-open {
+  padding-right: 0 !important;
+}
+
+.v-application {
+  overflow-x: hidden !important;
+}
+</style>
+
 <style scoped>
 /* Styling for the app bar and navigation drawer */
 .v-app-bar {
   border-bottom: 1px solid #ef6c00;
 }
 
+.diaglog-background{
+  background-color: #DF9755;
+}
 /* Add custom styling for the content area */
 .v-main {
   background-color: #ffa726;

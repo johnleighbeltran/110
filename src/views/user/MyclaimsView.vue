@@ -114,7 +114,7 @@ const deleteReport = async (id) => {
     </v-row>
 
     <!-- Content Section based on currentTab value -->
-    <v-window v-model="currentTab">
+    <v-window v-model="currentTab" class="mt-10">
       <!-- Claims Content Section -->
       <v-window-item>
         <v-card class="bg-orange-lighten-5">
