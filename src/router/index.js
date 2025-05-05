@@ -78,6 +78,13 @@ const router = createRouter({
       component: AdminDashboard,
       beforeEnter: adminGuard,
     },
+    {
+      path: '/redirect-temp',
+      name: 'redirect-temp',
+      component: {
+        template: '<div></div>' // empty dummy component
+      }
+    }
   ],
 })
 
