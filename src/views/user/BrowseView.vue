@@ -186,7 +186,7 @@ const claimItem = (item) => {
 <style scoped>
 .v-container {
   padding-top: 40px;
-  background: linear-gradient(135deg, #fff3e0 0%, #e2d1c3 100%);
+  background: #FFF3E0;
   min-height: 100vh;
 }
 
@@ -211,14 +211,14 @@ const claimItem = (item) => {
 .v-label {
   font-size: 16px;
   font-weight: 500;
-  color: #333;
+  color: #000000;
 }
 
 .v-card {
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
-  background: #fff3e0;
+  background: #ffdba2;
   margin-bottom: 30px;
   padding: 16px;
   min-height: 450px;
@@ -233,13 +233,13 @@ const claimItem = (item) => {
 .v-card-title {
   font-size: 24px;
   font-weight: bold;
-  color: #5f5f5f;
+  color: #000000;
   margin-bottom: 10px;
 }
 
 .v-card-subtitle {
   font-size: 16px;
-  color: #131212;
+  color: #000000;
   margin-bottom: 6px;
 }
 
@@ -252,8 +252,6 @@ const claimItem = (item) => {
 .v-img {
   height: 260px;
   object-fit: cover;
-  border-bottom: 1px solid #eee;
-  background-color: #ffe0b2;
   margin-bottom: 16px;
   border-radius: 14px;
 }
@@ -278,4 +276,5 @@ const claimItem = (item) => {
   font-size: 16px;
   margin-top: 2rem;
 }
+
 </style>

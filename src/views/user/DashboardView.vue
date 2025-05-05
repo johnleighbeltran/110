@@ -93,7 +93,7 @@ onMounted(() => {
     <!-- Recent Item Activity Table Section -->
     <v-row class="mt-5">
       <v-col cols="12">
-        <v-card>
+        <v-card >
           <v-card-title class="text-h5">Recent Item Activity</v-card-title>
 
           <!-- Progress bar shown while loading the data -->
@@ -127,6 +127,8 @@ onMounted(() => {
 .v-card {
   margin-bottom: 20px; /* Space between cards */
   border-radius: 16px; /* Rounded corners for the cards */
+  background-color: rgb(0, 85, 254);
+  color: white;
 }
 
 /* Found items card background and text styles */

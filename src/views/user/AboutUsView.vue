@@ -82,7 +82,7 @@ import Layout from '@/components/AuthLayout.vue'
 <style scoped>
 .about-wrapper {
   min-height: 100vh;
-  background: linear-gradient(to bottom right, #FFA726, #FFA726);
+  background: #FFCC80;
   padding-bottom: 40px;
 }
 

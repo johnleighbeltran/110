@@ -134,7 +134,7 @@ async function uploadImage(event) {
       route.name !== 'register' &&
       isEmailConfirmed
     ">
-      <v-navigation-drawer app v-model="drawer" permanent clipped width="250" color="orange lighten-2">
+      <v-navigation-drawer app v-model="drawer" permanent clipped width="250" color="orange-lighten-1">
         <v-list dense>
           <v-list-item @click="navigateDashboard">
             <v-list-item-content class="text-center">
@@ -156,7 +156,7 @@ async function uploadImage(event) {
         </v-list>
       </v-navigation-drawer>
 
-      <v-app-bar app color="orange-darken-2 text-black" dark>
+      <v-app-bar app color="orange-lighten-1 text-black" dark>
         <v-app-bar-nav-icon @click="toggleDrawer" />
         <v-toolbar-title class="text-h5 font-weight-black">ClaimPoint</v-toolbar-title>
         <v-spacer />
@@ -219,8 +219,8 @@ async function uploadImage(event) {
           <v-row justify="center">
             <!-- Wide layout like code2 but full-width on medium to avoid elongation -->
             <v-col cols="12" sm="10" md="12" lg="9">
-              <v-card class="elevation-10 bg-orange-lighten-4" outlined>
-                <v-card-text class="bg-orange-lighten-4"><router-view/></v-card-text>
+              <v-card class="elevation-10 bg-orange-lighten-1" outlined>
+                <v-card-text class="bg-orange-lighten-1"><router-view/></v-card-text>
               </v-card>
             </v-col>
           </v-row>
@@ -233,11 +233,11 @@ async function uploadImage(event) {
 </template>
 
 <style scoped>
-.v-app-bar { border-bottom:1px solid #ef6c00; }
-.diaglog-background { background-color:#DF9755; }
-.v-main { background-color:#ffa726; }
-.v-container { background-color:#ffa726; padding:20px; border-radius:20px; }
-.v-card { box-shadow:0px 4px 8px rgba(255,145,0,0.5); padding:16px; }
+.v-app-bar { border-bottom:1px solid #FFA726; }
+.diaglog-background { background-color:#ffffff; }
+.v-main { background-color:#fff3e0; }
+.v-container { background-color:#fff3e0; padding:20px; border-radius:20px; }
+.v-card { box-shadow:0px 4px 8px rgba(201, 177, 146, 0.5); padding:16px; }
 .logo { display:block; margin:0 auto; width:30%; height:auto; }
 @media(max-width:600px){ .logo{width:40%;} .v-main{margin-left:0;} }
 </style>

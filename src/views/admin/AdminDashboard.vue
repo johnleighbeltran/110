@@ -331,7 +331,7 @@ onMounted(() => {
           <v-card-title class="text-h5">System Report</v-card-title>
           <v-row>
       <v-col cols="12" md="4">
-        <v-sheet class="pa-4" elevation="1" rounded>
+        <v-sheet class="pa-4">
           <h3 class="text-lg font-semibold mb-2">Top Reported Items</h3>
           <ul>
             <li v-for="(item, index) in mostReportedItems" :key="index">
@@ -342,7 +342,7 @@ onMounted(() => {
       </v-col>
 
       <v-col cols="12" md="4">
-        <v-sheet class="pa-4" elevation="1" rounded>
+        <v-sheet class="pa-4">
           <h3 class="text-lg font-semibold mb-2">Frequent Locations</h3>
           <ul>
             <li v-for="(loc, index) in frequentLocations" :key="index">
@@ -353,7 +353,7 @@ onMounted(() => {
       </v-col>
 
       <v-col cols="12" md="4">
-        <v-sheet class="pa-4" elevation="1" rounded>
+        <v-sheet class="pa-4">
           <h3 class="text-lg font-semibold mb-2">Total Claims Processed</h3>
           <p class="text-2xl font-bold">{{ totalClaimsProcessed }}</p>
         </v-sheet>
@@ -370,7 +370,7 @@ onMounted(() => {
 /* --- Overall Card Layout --- */
 .v-card {
   border-radius: 18px;
-  background: #FFCC80;
+  background: #FFF3E0;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0);
   margin-bottom: 28px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -381,11 +381,17 @@ onMounted(() => {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
+/* sub-title */
+.v-card-subtitle {
+  color: #000000;
+  font-weight: 600;
+}
+
 /* --- Card Title (Section Headers) --- */
 .v-card-title {
   font-size: 24px;
   font-weight: 700;
-  background: #191a19;
+  background: #000000;
   color: white;
   padding: 20px;
   border-bottom: 1px solid #e0e0e0;
@@ -395,12 +401,9 @@ onMounted(() => {
 /* --- Dashboard Statistic Cards --- */
 .statistic-card {
   background: linear-gradient(135deg, #d58330 0%, #0f0e0e 100%);
-  color: #333;
-  border: 1px solid #e0e0e0;
+  color: #000000;
   text-align: center;
   padding: 24px;
-  border-radius: 18px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .statistic-card h2 {
@@ -412,13 +415,13 @@ onMounted(() => {
 .statistic-card p {
   font-size: 28px;
   font-weight: bold;
-  color: #6a1b9a;
+  color: #000000;
 }
 
 /* --- v-sheet for Sub Reports (System Report Section) --- */
 .v-sheet {
-  background: #fafafa;
-  border: 1px solid #ddd;
+  background: #FFF3E0;
+
   border-radius: 12px;
   padding: 20px;
   transition: background 0.3s;
@@ -456,7 +459,11 @@ li {
  
 /* --- Avatar Menu --- */
 .v-avatar {
-  border: 2px solid #6a1b9a;
+  border: 2px solid #ffffff;
+}
+
+.v-data-table {
+  background-color: #FFF3E0;
 }
 </style>
 

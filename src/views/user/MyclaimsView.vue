@@ -251,4 +251,11 @@ const deleteReport = async (id) => {
   font-size: 12px;
   margin-left: 8px;
 }
+
+.v-container {
+  background-color: #FFF3E0;
+}
+.v-card {
+  background-color: #ffdba2;
+}
 </style>
